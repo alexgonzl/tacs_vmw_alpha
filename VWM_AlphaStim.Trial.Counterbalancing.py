@@ -1,4 +1,46 @@
+
 import numpy as np
+# define a point in space
+
+class VWMObj(Object):
+    """ Trial objects. """
+    size = (100, 400) # height and width in pixels. 
+    def _init_(self,centerLoc,orientation,objID):       
+            self.centerLoc  = centerLoc
+            self.orientation = orientation
+            self.objID      = objID
+    def getLoc():
+        return self.centerLoc
+
+    def getOrientation():
+        return self.orientation
+
+    def getObjID():
+        return self.objID
+
+class VWMTargetObj(VWMObj):
+    def _init_(self):
+        self.color = "red";
+    def objType():
+        print  "Target" 
+
+class VWMDistractorObj(VWMObj):
+    def _init_(self):
+        self.color = "blue";
+    def objType():
+        print  "Distractor"         
+
+# define trial class
+class VWMTrial(object):    
+    """trial properties for VWM alpha tACS """
+    def __init__(self, arg):        
+        self.trialID    = []
+        self.condNum = [] # condition number: TODO define what each condition number is
+        self.nTargets = [] # number of targets in the trial. these are associated with a specific color
+        self.nDistractors = [] # number of distractors in the trial. these will be shown with a different color than the above. 
+
+
+    def condition(self):
 
 
 ## Set number of conditions and 
