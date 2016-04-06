@@ -1,5 +1,5 @@
 from __future__ import division  # so that 1/3=0.333 instead of 1/3=0
-from psychopy import locale_setup, visual, core, data, event, logging, sound, gui
+from psychopy import locale_setup, visual, core, data, event, logging, gui
 from psychopy.constants import *  # things like STARTED, FINISHED
 import numpy as np  # whole numpy lib is available, prepend 'np.'
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
@@ -55,7 +55,7 @@ cross4 = makeCross()
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
-####Why two routine timers?
+#### *TODO* Why two routine timers? #######
 
 for i in range(1):
 
@@ -67,33 +67,30 @@ for i in range(1):
     # keep track of which components have finished
     direct_cueComponents = []
     direct_cueComponents.append(directionalCue)
-    for thisComponent in direct_cueComponents:
-        if hasattr(thisComponent, 'status'):
-            thisComponent.status = NOT_STARTED
+    directionalCue.status = NOT_STARTED
     
     #-------Start Routine "direct_cue"-------
     continueRoutine = True
-    while continueRoutine and routineTimer.getTime() > 0:
+    while continueRoutine and routineTimer.getTime() > 0: ### *TODO* Can get rid of while loop and multiple win flips ####
         # get current time
         t = direct_cueClock.getTime()
         # update/draw components on each frame
         
         # *text* updates
-        if t >= 0.0 and directionalCue.status == NOT_STARTED:
+        if directionalCue.status == NOT_STARTED:
             # keep track of start time for later
             directionalCue.tStart = t  # underestimates by a little under one frame
             directionalCue.setAutoDraw(True)
-        if directionalCue.status == STARTED and t >= (0.0 + (0.2-win.monitorFramePeriod*0.75)): #most of one frame period left
+        if directionalCue.status == STARTED and t >= (0.2-win.monitorFramePeriod*0.75): #most of one frame period left
             directionalCue.setAutoDraw(False)
         
         # check if all components have finished
         if not continueRoutine:  # a component has requested a forced-end of Routine
             break
         continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in direct_cueComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
+        if directionalCue.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
         
         # check for quit (the Esc key)
         if endExpNow or event.getKeys(keyList=["escape"]):
@@ -163,7 +160,7 @@ for i in range(1):
     routineTimer.add(0.100000)
     # update component parameters for each repeat
     # keep track of which components have finished
-    stim_arrayComponents = []
+    stim_arrayComponents = [] #### *TODO* make array of stim_arrayComponents at the top
     stim_arrayComponents.append(cross3)
     targetRects = trials.VWMTrials[0].TargetObjs
     distractorRects = trials.VWMTrials[0].Distrators
@@ -291,11 +288,11 @@ for i in range(1):
     testResponse = event.BuilderKeyResponse()  # create an object of type KeyResponse
     testResponse.status = NOT_STARTED
     # keep track of which components have finished
-    test_arrayComponents = []
+    test_arrayComponents = [] ## *TODO* make array of test_arrayComponents
     test_arrayComponents.append(testResponse)
     test_arrayComponents.append(cross4)
     if (trials.ChangeTrialIDs[0] == 1):
-        targetRects[0].ori += 90
+        targetRects[0].ori += 90 ## *TODO* set orientations in data structure of this program ##
     for targetObj in targetRects:
         test_arrayComponents.append(targetObj)
     for distractor in distractorRects:
