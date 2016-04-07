@@ -72,24 +72,25 @@ class VWMObj():
         # center location tuple: (radii in deg from center of screen, theta from median)
         if objtype=='target':
             self.color      = 'red'
-            elif objtype=='distractor':
+        elif objtype=='distractor':
                 self.color      = 'blue'
-        else
+        else:
             self.color      = 'black'
             
-            self.centerLoc      = centerLoc
-            self.orientation    = orientation
-            self.objID          = objID
-            self.objType        = objtype
-            self.rect           = visual.Rect(win=win, name=None,
+        self.centerLoc      = centerLoc
+        self.orientation    = orientation
+        self.objID          = objID
+        self.objType        = objtype
+        self.rect           = visual.Rect(win=win, name=None,
                                               width=self.size[0], height=self.size[1], ori=orientation,
                                               pos=centerLoc, lineWidth=1, lineColor=[1,1,1], lineColorSpace='rgb',
                                               fillColor=self.color, fillColorSpace='rgb', opacity=1,depth=-1.0,)
-                def getLoc(self):
-                return self.centerLoc
+        
+    def getLoc(self):
+        return self.centerLoc
 
-def getOrientation(self):
-    return self.orientation
+    def getOrientation(self):
+        return self.orientation
     
     def getObjID(self):
         return self.objID
