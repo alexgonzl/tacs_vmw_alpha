@@ -69,11 +69,10 @@ class VWMObj():
     size = (0.1, 0.3)
     def __init__(self, objtype, objID , centerLoc = (0,0), orientation = 0):
         # center location tuple: (radii in deg from center of screen, theta from median)
-        self.color = 'gray'
         if objtype=="target":
-            self.color      = 'red'
+            self.color      = 'firebrick'
         elif objtype=="distractor":
-            self.color      = 'blue'
+            self.color      = 'mediumblue'
         else:
             self.color      = 'black'
         self.centerLoc      = centerLoc
@@ -82,7 +81,7 @@ class VWMObj():
         self.objType        = objtype
         self.rect           = visual.Rect(win=win, name=None,
                                 width=self.size[0], height=self.size[1], ori=orientation,
-                                pos=centerLoc, lineWidth=1, lineColor=[1,1,1], lineColorSpace='rgb',
+                                pos=centerLoc, lineWidth=1, lineColor=None, lineColorSpace='rgb',
                                 fillColor=self.color, fillColorSpace='rgb', opacity=1,depth=-1.0,)
     def getLoc(self):
         return self.centerLoc

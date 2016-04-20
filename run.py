@@ -1,5 +1,5 @@
 from __future__ import division  # so that 1/3=0.333 instead of 1/3=0
-from psychopy import visual, core, data, event, logging
+from psychopy import visual, core, data, event, logging #, gui
 from psychopy.constants import *  # things like STARTED, FINISHED
 import numpy as np  # whole numpy lib is available, prepend 'np.'
 from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
@@ -7,7 +7,28 @@ from numpy.random import random, randint, normal, shuffle
 import os  # handy system and path functions
 import sys # to get file system encoding
 
-from trials import VWMTrials, win
+from setup import VWMTrials, win
+# Ensure that relative paths start from the same directory as this script
+_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+os.chdir(_thisDir)
+
+# Store info about the experiment session
+expName = 'tacsVWMAlpha.py'
+expInfo = {'participant':'', 'session':'001'}
+## dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
+## if dlg.OK == False: core.quit()  # user pressed cancel
+expInfo['date'] = data.getDateStr()  # add a simple timestamp
+expInfo['expName'] = expName
+
+# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
+filename = _thisDir + os.sep + u'data/%s_%s_%s' %(expInfo['participant'], expName, expInfo['date'])
+
+# An ExperimentHandler isn't essential but helps with data saving
+thisExp = data.ExperimentHandler(name=expName, version='',
+    extraInfo=expInfo, runtimeInfo=None,
+    originPath=None,
+    savePickle=True, saveWideText=True,
+    dataFileName=filename)
 
 # Global Constants:
 nTrials = 720
@@ -17,6 +38,25 @@ stimArrayTime = 0.1
 retentionTime = 1.0
 testArrayTime = 1.0
 itiTime = 0.6
+
+# Initialize Instruction text
+instructions = visual.TextStim(win=win, ori=0, name='instr',
+    text="Please look at the fixation cross during the course of the study. Pay attention only to the red rectangles, the blue rectangles are distractors. You will be presented with two consecutive slides of rectangles for each trial, and sometimes one of the red rectangles will rotate 90 deg. between the two presentations. If you think a rotation occured, press the space bar. Now press any key to continue.", 
+    font=u'Arial', pos=[0,0], height=0.1, wrapWidth=None, 
+    color=u'white', colorSpace='rgb',
+    opacity=1, depth=0.0)
+
+# Initialize Practice round text
+practiceText = visual.TextStim(win=win, ori=0, name='instr',
+    text="This is a practice round. Make sure to press the spacebar immediately after the second slide is presented. Press any key to continue.", 
+    font=u'Arial',
+    pos=[0,0], height=0.1, wrapWidth=None, color=u'white', colorSpace='rgb',
+    opacity=1, depth=0.0)
+finalText = visual.TextStim(win=win, ori=0, name='instr',
+    text="Press any key to begin the experiment.", 
+    font=u'Arial',
+    pos=[0,0], height=0.1, wrapWidth=None, color=u'white', colorSpace='rgb',
+    opacity=1, depth=0.0)
 
 # Initialize fixation cross graphic
 def makeCross():
@@ -57,25 +97,14 @@ cross2 = makeCross()
 # Initialize components for Routine "test_array"
 test_arrayClock = core.Clock()
 cross4 = makeCross()
-# testRectsPerTrial = []
-# ##for trial in VWMTrials:
-#     ##trialObjsArray = trial.Objects
-#     testRects = []
-#     cnt = 0
-#     for obj in trial.Objects:
-#         rect = obj.rect
-#         ##if trial.ChangeTrial == 1 and cnt == 0 and obj.objType == 'target':
-#         rect.ori += 90.0
-#             ##cnt += 1
-#         testRects.append(rect)
-#     testRectsPerTrial.append(testRects)
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
 
-for i in range(nTrials):
+# Initialize run method
 
+def run(i):
 #------Prepare to start Routine "direct_cue"-------
     t = 0 # time in seconds
     direct_cueClock.reset()  # clock 
@@ -85,8 +114,8 @@ for i in range(nTrials):
     directionalCue.status = NOT_STARTED
     
     #-------Start Routine "direct_cue"-------
+    continueRoutine = True
     while routineTimer.getTime() > 0:
-        win.flip() # refreshes the screen
         # get current time for data saving
         t = direct_cueClock.getTime()
         # update/draw components on each frame
@@ -98,7 +127,11 @@ for i in range(nTrials):
             directionalCue.setAutoDraw(True)
         if directionalCue.status == STARTED and t >= (directionCueTime-win.monitorFramePeriod*0.75): #most of one frame period left
             directionalCue.setAutoDraw(False)
+            continueRoutine = False
         
+        if continueRoutine:
+            win.flip() # refreshes the screen
+
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
@@ -115,8 +148,8 @@ for i in range(nTrials):
     cross1.status = NOT_STARTED
     
     #-------Start Routine "fix_cross"-------
+    continueRoutine = True
     while routineTimer.getTime() > 0:
-        win.flip() # refreshes the screen
         # get current time
         t = fix_crossClock.getTime()
         # update/draw components on each frame
@@ -128,7 +161,11 @@ for i in range(nTrials):
             cross1.setAutoDraw(True)
         if cross1.status == STARTED and t >= (fixCrossTime-win.monitorFramePeriod*0.75): #most of one frame period left
             cross1.setAutoDraw(False)
+            continueRoutine = False
         
+        if continueRoutine:
+            win.flip() # refreshes the screen
+
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
@@ -205,8 +242,8 @@ for i in range(nTrials):
     cross2.status = NOT_STARTED
     
     #-------Start Routine "reten_time"-------
+    continueRoutine = True
     while routineTimer.getTime() > 0:
-        win.flip() # refreshes the screen
         # get current time
         t = reten_timeClock.getTime()
         # update/draw components on each frame
@@ -218,7 +255,11 @@ for i in range(nTrials):
             cross2.setAutoDraw(True)
         if cross2.status == STARTED and t >= (retentionTime-win.monitorFramePeriod*0.75): #most of one frame period left
             cross2.setAutoDraw(False)
+            continueRoutine = False
         
+        if continueRoutine:
+            win.flip() # refreshes the screen
+
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
@@ -238,14 +279,13 @@ for i in range(nTrials):
     test_arrayComponents.append(testResponse)
     test_arrayComponents.append(cross4)
     cnt = 0
-    num = 0
+    slideRects = []
     for rect in rectsPerTrial[i]:
         if VWMTrials[i].ChangeTrial == 1 and cnt == 0:
             rect.ori += 90.0
             cnt += 1
         test_arrayComponents.append(rect)
-        rectsPerTrial[i][num] = rect
-        num += 1
+        slideRects.append(rect)
     for thisComponent in test_arrayComponents:
         thisComponent.status = NOT_STARTED
     
@@ -258,7 +298,7 @@ for i in range(nTrials):
         # update/draw components on each frame
         
         # *Rects* updates
-        for rect in rectsPerTrial[i]:
+        for rect in slideRects:
             if t >= 0.0 and rect.status == NOT_STARTED:
                 # keep track of start time for later
                 rect.tStart = t  # underestimates by a little under one frame
@@ -287,7 +327,7 @@ for i in range(nTrials):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=['y', 'n', 'left', 'right', 'space'])
+            theseKeys = event.getKeys(keyList=['space'])
             
             # check for quit:
             if "escape" in theseKeys:
@@ -322,12 +362,44 @@ for i in range(nTrials):
     # check responses
     if testResponse.keys in ['', [], None]:  # No response was made
        testResponse.keys=None
-    # store data for trials (TrialHandler)
-    # trialData.addData('testResponse.keys',testResponse.keys)
-    # if testResponse.keys != None:  # we had a response
-    #    trialData.addData('testResponse.rt', testResponse.rt)
-    # thisExp.nextEntry()
-    # *TODO* Add trial Data #
+    # store data for thisExp (ExperimentHandler)
+    thisExp.addData('trialID', VWMTrials[i].trialID)
+    thisExp.addData('Response key',testResponse.keys)
+    if testResponse.keys != None:  # we had a response
+        thisExp.addData('Response time', testResponse.rt)
+    thisExp.addData('ChangeTrial', VWMTrials[i].ChangeTrial)
+    thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
+    thisExp.addData('nTargets', VWMTrials[i].nTargets)
+    thisExp.nextEntry()
 
+# Presents Instructions
+while(True):
+    instructions.setAutoDraw(True)
+    win.flip()
+    if len(event.getKeys()) > 0:
+        break
+instructions.setAutoDraw(False)
+
+# Runs a Practice Round
+routineTimer.add(5)
+while (routineTimer.getTime > 0):
+    practiceText.setAutoDraw(True)
+    win.flip()
+    if len(event.getKeys()) > 0:
+        break
+practiceText.setAutoDraw(False)
+#run(700)
+while(True):
+    finalText.setAutoDraw(True)
+    win.flip()
+    if len(event.getKeys()) > 0:
+        break
+finalText.setAutoDraw(False)
+
+# Runs all 720 trials
+for i in range(nTrials):
+    run(i)
+
+thisExp.saveAsExcel(filename, sheetName='expData', stimOut=None, dataOut=('n', 'all_mean', 'all_std', 'all_raw'), matrixOnly=False, appendFile=True, fileCollisionMethod='rename')
 win.close()
 core.quit()
