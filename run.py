@@ -2,8 +2,7 @@ from __future__ import division  # so that 1/3=0.333 instead of 1/3=0
 from psychopy import visual, core, data, event, logging #, gui
 from psychopy.constants import *  # things like STARTED, FINISHED
 import numpy as np  # whole numpy lib is available, prepend 'np.'
-from numpy import sin, cos, tan, log, log10, pi, average, sqrt, std, deg2rad, rad2deg, linspace, asarray
-from numpy.random import random, randint, normal, shuffle
+import random
 import os  # handy system and path functions
 import sys # to get file system encoding
 
@@ -38,25 +37,7 @@ stimArrayTime = 0.1
 retentionTime = 1.0
 testArrayTime = 1.0
 itiTime = 0.6
-
-# Initialize Instruction text
-instructions = visual.TextStim(win=win, ori=0, name='instr',
-    text="Please look at the fixation cross during the course of the study. Pay attention only to the red rectangles, the blue rectangles are distractors. You will be presented with two consecutive slides of rectangles for each trial, and sometimes one of the red rectangles will rotate 90 deg. between the two presentations. If you think a rotation occured, press the space bar. Now press any key to continue.", 
-    font=u'Arial', pos=[0,0], height=0.1, wrapWidth=None, 
-    color=u'white', colorSpace='rgb',
-    opacity=1, depth=0.0)
-
-# Initialize Practice round text
-practiceText = visual.TextStim(win=win, ori=0, name='instr',
-    text="This is a practice round. Make sure to press the spacebar immediately after the second slide is presented. Press any key to continue.", 
-    font=u'Arial',
-    pos=[0,0], height=0.1, wrapWidth=None, color=u'white', colorSpace='rgb',
-    opacity=1, depth=0.0)
-finalText = visual.TextStim(win=win, ori=0, name='instr',
-    text="Press any key to begin the experiment.", 
-    font=u'Arial',
-    pos=[0,0], height=0.1, wrapWidth=None, color=u'white', colorSpace='rgb',
-    opacity=1, depth=0.0)
+rotation = 45
 
 # Initialize fixation cross graphic
 def makeCross():
@@ -282,7 +263,10 @@ def run(i):
     slideRects = []
     for rect in rectsPerTrial[i]:
         if VWMTrials[i].ChangeTrial == 1 and cnt == 0:
-            rect.ori += 90.0
+            mod = 1
+            if random.random() >= 0.5:
+                mod = -1
+            rect.ori += mod * rotation
             cnt += 1
         test_arrayComponents.append(rect)
         slideRects.append(rect)
@@ -334,9 +318,7 @@ def run(i):
                 endExpNow = True
             if len(theseKeys) > 0:  # at least one key was pressed
                 testResponse.keys = theseKeys[-1]  # just the last key pressed
-                testResponse.rt = testResponse.clock.getTime()
-                # a response ends the routine
-                continueRoutine = False                 
+                testResponse.rt = testResponse.clock.getTime()                
                          
         # check if all components have finished
         if not continueRoutine:  # a component has requested a forced-end of Routine
@@ -370,31 +352,8 @@ def run(i):
     thisExp.addData('ChangeTrial', VWMTrials[i].ChangeTrial)
     thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
+    thisExp.addData('condNum', VWMTrials[i].condNum)
     thisExp.nextEntry()
-
-# Presents Instructions
-while(True):
-    instructions.setAutoDraw(True)
-    win.flip()
-    if len(event.getKeys()) > 0:
-        break
-instructions.setAutoDraw(False)
-
-# Runs a Practice Round
-routineTimer.add(5)
-while (routineTimer.getTime > 0):
-    practiceText.setAutoDraw(True)
-    win.flip()
-    if len(event.getKeys()) > 0:
-        break
-practiceText.setAutoDraw(False)
-#run(700)
-while(True):
-    finalText.setAutoDraw(True)
-    win.flip()
-    if len(event.getKeys()) > 0:
-        break
-finalText.setAutoDraw(False)
 
 # Runs all 720 trials
 for i in range(nTrials):

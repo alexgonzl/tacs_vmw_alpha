@@ -81,8 +81,8 @@ class VWMObj():
         self.objType        = objtype
         self.rect           = visual.Rect(win=win, name=None,
                                 width=self.size[0], height=self.size[1], ori=orientation,
-                                pos=centerLoc, lineWidth=1, lineColor=None, lineColorSpace='rgb',
-                                fillColor=self.color, fillColorSpace='rgb', opacity=1,depth=-1.0,)
+                                pos=centerLoc, lineWidth=1, lineColor=self.color, lineColorSpace='rgb',
+                                fillColor=self.color, fillColorSpace='rgb', opacity=1, depth=-1.0, interpolate=True)
     def getLoc(self):
         return self.centerLoc
 
