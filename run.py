@@ -353,6 +353,8 @@ def run(i):
     thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
     thisExp.addData('condNum', VWMTrials[i].condNum)
+    if VWMTrials[i].ChangeTrial == 1:
+        thisExp.addData('changePos', slideRects[0].pos)
     thisExp.nextEntry()
 
 # Runs all 720 trials
