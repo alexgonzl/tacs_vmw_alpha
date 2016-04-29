@@ -6,15 +6,15 @@ from psychopy.tools import coordinatetools as coord
 import random
 
 # Constants
-SubjDistance 	= 100.0  # in cm
-MonitorWidthCM 	= 27.94  # in cm
-nTrials  	 	= 720
+SubjDistance    = 100.0  # in cm
+MonitorWidthCM  = 27.94  # in cm
+nTrials         = 720
 # get monitor dimensions in pixels
 MonitorWidth =  NSScreen.mainScreen().frame().size.width
 MonitorHeight = NSScreen.mainScreen().frame().size.height
 mon = monitors.Monitor('VWMTaskMonitor')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
-mon.setSizePix([MonWidth,MonHeight]) 
+#mon.setSizePix([MonWidth,MonHeight]) 
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
 
 # set window
@@ -26,7 +26,7 @@ TargetSets      = np.array([2,4])
 DistractorSets  = np.array([0,2,4])
 # Set orientations and location for each item
 PossibleObjOrientations  = np.concatenate((np.arange(10,81),np.arange(100,171)));
-PossibleObjRadix 		 = np.array([0.35, 0.85])
+PossibleObjRadix         = np.array([0.35, 0.85])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                            np.arange(200,251),np.arange(290,341)));
 
@@ -244,10 +244,11 @@ ObjectOrietations = {};
 for tt in range(nTrials):
     ObjectOrietations[tt] = np.random.choice(PossibleObjOrientations,nTrialObjs[tt])
 
+
 #Create the trials.
 VWMTrials = []
 for tt in range(nTrials):
-    VWMTrials[tt] = VWMTrial(tt,TrialCondIDs[tt],ChangeTrialIDs[tt])
+    VWMTrials.append(VWMTrial(tt,TrialCondIDs[tt],ChangeTrialIDs[tt]))
     
     # TODO: change into more efficient code (this can be a one liner...)
     if ChangeTrialIDs[tt]==1:
@@ -256,13 +257,13 @@ for tt in range(nTrials):
         else:
             VWMTrials[tt].ChangeTargSign=-1
 
-    for obj in range (thisTrial.nTotalItems):
-        VWMTrials[tt].Objects[obj].ori = ObjectOrietations[tt][obj]
-        targCnt = 0
-        distCnt = 0
-        if VWMTrials[tt].ObjTarg[obj]: 
-            VWMTrials[tt].Objects[obj].pos = TargetPos[tt][targCnt]
-            targCnt +=1
+    targCnt = 0
+    distCnt = 0
+    for obj in range (VWMTrials[tt].nTotalItems):
+        VWMTrials[tt].Objects[obj].rect.ori = ObjectOrietations[tt][obj]
+        if VWMTrials[tt].ObjTarg[obj]==1: 
+            VWMTrials[tt].Objects[obj].rect.pos = TargetPos[tt][targCnt]
+            targCnt +=1            
         else:
-            VWMTrials[tt].Objects[obj].pos = DistractorPos[tt][distCnt]
+            VWMTrials[tt].Objects[obj].rect.pos = DistractorPos[tt][distCnt]
             distCnt +=1
