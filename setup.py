@@ -14,11 +14,11 @@ MonitorWidth =  NSScreen.mainScreen().frame().size.width
 MonitorHeight = NSScreen.mainScreen().frame().size.height
 mon = monitors.Monitor('VWMTaskMonitor')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
-#mon.setSizePix([MonWidth,MonHeight]) 
+mon.setSizePix([MonitorWidth,MonitorHeight]) 
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
 
 # set window
-win = visual.Window(size=(500, 500), fullscr=False, screen=0, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(1280, 800), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
                     monitor='VWMTaskMonitor', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # Targets and distractors sets
@@ -26,7 +26,7 @@ TargetSets      = np.array([2,4])
 DistractorSets  = np.array([0,2,4])
 # Set orientations and location for each item
 PossibleObjOrientations  = np.concatenate((np.arange(10,81),np.arange(100,171)));
-PossibleObjRadix         = np.array([0.35, 0.85])
+PossibleObjRadix         = np.array([0.35, 0.80])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                            np.arange(200,251),np.arange(290,341)));
 
@@ -214,8 +214,8 @@ for tt in range(nTrials):
     for ii in range(nT):
         qq = TargsQuad[ii] # target quadrant
         theta = np.random.choice(PossibleObjTheta[qq-1], replace=False)
-        radixID = int(np.random.random>0.5)
-        targRadPos[qq-1] = radixID;
+        radixID = int(np.random.random()>0.5)
+        targRadPos[qq-1] = radixID
         radix = PossibleObjRadix[radixID]
         x,y = coord.pol2cart(theta, radix, units='deg')
         trialTargPos.append((x,y))
@@ -229,7 +229,7 @@ for tt in range(nTrials):
         elif targRadPos[qq-1]==0:
             radix = PossibleObjRadix[1]
         else:
-            radix = PossibleObjRadix[int(np.random.random>0.5)]
+            radix = PossibleObjRadix[int(np.random.random()>0.5)]
 
         x,y = coord.pol2cart(theta, radix, units='deg')
         trialDisPos.append((x,y))
@@ -256,6 +256,8 @@ for tt in range(nTrials):
             VWMTrials[tt].ChangeTargSign=1
         else:
             VWMTrials[tt].ChangeTargSign=-1
+    changeTargID = np.random.randint(VWMTrials[tt].nTargets, size=1)
+    VWMTrials[tt].ChangeTargID = changeTargID[0]
 
     targCnt = 0
     distCnt = 0

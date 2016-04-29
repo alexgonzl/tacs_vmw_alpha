@@ -262,11 +262,8 @@ def run(i):
     cnt = 0
     slideRects = []
     for rect in rectsPerTrial[i]:
-        if VWMTrials[i].ChangeTrial == 1 and cnt == 0:
-            mod = 1
-            if random.random() >= 0.5:
-                mod = -1
-            rect.ori += mod * rotation
+        if VWMTrials[i].ChangeTrial == 1 and cnt == VWMTrials[i].ChangeTargID:
+            rect.ori += VWMTrials[i].ChangeTargSign * rotation
             cnt += 1
         test_arrayComponents.append(rect)
         slideRects.append(rect)
@@ -354,7 +351,7 @@ def run(i):
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
     thisExp.addData('condNum', VWMTrials[i].condNum)
     if VWMTrials[i].ChangeTrial == 1:
-        thisExp.addData('changePos', slideRects[0].pos)
+        thisExp.addData('changePos', slideRects[VWMTrials[i].ChangeTargID].pos)
     thisExp.nextEntry()
 
 # Runs all 720 trials
