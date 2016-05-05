@@ -37,13 +37,13 @@ stimArrayTime = 0.1
 retentionTime = 1.0
 testArrayTime = 1.0
 itiTime = 0.6
-rotation = 45
+rotation = 90
 
 # Initialize fixation cross graphic
 def makeCross():
     return visual.TextStim(win=win, ori=0,
     text=u'+',    font=u'Arial',
-    pos=[0, 0], height=0.2, wrapWidth=None,
+    pos=[0, 0], height=1.0, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
 
@@ -51,7 +51,7 @@ def makeCross():
 direct_cueClock = core.Clock()
 directionalCue = visual.TextStim(win=win, ori=0, name='text',
     text=u'\u2194',    font=u'Arial',
-    pos=[0, 0], height=0.2, wrapWidth=None,
+    pos=[0, 0], height=1.0, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
 

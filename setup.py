@@ -16,17 +16,18 @@ mon = monitors.Monitor('VWMTaskMonitor')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
 mon.setSizePix([MonitorWidth,MonitorHeight]) 
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
+mon.setDistance(100)
 
 # set window
 win = visual.Window(size=(1280, 800), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
-                    monitor='VWMTaskMonitor', color=[0,0,0], colorSpace='rgb', blendMode='avg')
+                    monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # Targets and distractors sets
 TargetSets      = np.array([2,4])
 DistractorSets  = np.array([0,2,4])
 # Set orientations and location for each item
 PossibleObjOrientations  = np.concatenate((np.arange(10,81),np.arange(100,171)));
-PossibleObjRadix         = np.array([0.35, 0.80])
+PossibleObjRadix         = np.array([2, 4])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                            np.arange(200,251),np.arange(290,341)));
 
@@ -110,7 +111,7 @@ for cond in conds:
 # all measures are in degrees
 class VWMObj():
     """ Trial objects. """
-    size = (0.1, 0.3)
+    size = (.5, 1.5)
     def __init__(self, objType, objID , centerLoc = (0,0), orientation = 0):
     # center location tuple: (radii in deg from center of screen, theta from median)
         if objType=="target":
