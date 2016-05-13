@@ -1,9 +1,11 @@
 import numpy as np
 from math import atan2, degrees
 from AppKit import NSScreen
-from psychopy import visual,monitors,tools
+from psychopy import visual, monitors, tools, data #, gui
 from psychopy.tools import coordinatetools as coord
 import random
+import os
+import sys
 
 # Constants
 SubjDistance    = 100.0  # in cm
@@ -17,6 +19,27 @@ mon.setDistance(SubjDistance) # centimeters of between monitor and subject
 mon.setSizePix([MonitorWidth,MonitorHeight]) 
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
 mon.setDistance(100)
+
+# Ensure that relative paths start from the same directory as this script
+_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+os.chdir(_thisDir)
+
+# Store info about the experiment session
+expName = 'tacsVWMAlpha.py'
+expInfo = {'participant':'', 'session':'001'}
+## dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
+## if dlg.OK == False: core.quit()  # user pressed cancel
+expInfo['date'] = data.getDateStr()  # add a simple timestamp
+expInfo['expName'] = expName
+
+# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
+filename = _thisDir + os.sep + u'data/%s_%s_%s' %(expInfo['participant'], expName, expInfo['date']) + '.setup'
+
+# An ExperimentHandler isn't essential but helps with data saving
+thisExp = data.ExperimentHandler(name='setup_' + expName, version='', runtimeInfo=None,
+    originPath=None,
+    savePickle=True, saveWideText=True,
+    dataFileName=filename)
 
 # set window
 win = visual.Window(size=(1280, 800), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
@@ -270,3 +293,10 @@ for tt in range(nTrials):
         else:
             VWMTrials[tt].Objects[obj].rect.pos = DistractorPos[tt][distCnt]
             distCnt +=1
+
+for i in range(nTrials):
+    thisExp.addData('TrialID', TrialIDs[i])
+    thisExp.addData('ChangeTrials', ChangeTrialIDs[i])
+    thisExp.addData('TrialConds', TrialCondIDs[i])
+    thisExp.addData('SubConds', TrialSubCondID[i])
+    thisExp.nextEntry()
