@@ -10,7 +10,7 @@ import sys
 # Constants
 SubjDistance    = 100.0  # in cm
 MonitorWidthCM  = 27.94  # in cm
-nTrials         = 720
+nTrials         = 368
 # get monitor dimensions in pixels
 MonitorWidth =  NSScreen.mainScreen().frame().size.width
 MonitorHeight = NSScreen.mainScreen().frame().size.height
@@ -75,7 +75,7 @@ for ts in range(TargetSets.size):
         cnt += 1
 
 # dictionary for # of trials and # of subcondtions
-nTrialsPerCond       = {1:84, 2:192, 3:84, 4:100, 5:160 ,6:100}
+nTrialsPerCond       = {1:44, 2:96, 3:44, 4:50, 5:84 ,6:50}
 nSubCondsPerCond     = {1:4,2:16,3:4,4:1,5:4,6:1}
 nTrialsPerSubCond    = {}
 for cond in conds:
