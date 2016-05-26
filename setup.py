@@ -280,7 +280,7 @@ for tt in range(nTrials):
             VWMTrials[tt].ChangeTargSign=1
         else:
             VWMTrials[tt].ChangeTargSign=-1
-    changeTargID = np.random.randint(VWMTrials[tt].nTargets, size=1)
+    changeTargID = np.random.randint(VWMTrials[tt].nTargets - 1, size=1)
     VWMTrials[tt].ChangeTargID = changeTargID[0]
 
     targCnt = 0

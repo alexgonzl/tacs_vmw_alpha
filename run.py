@@ -30,7 +30,7 @@ thisExp = data.ExperimentHandler(name=expName, version='',
     dataFileName=filename)
 
 # Global Constants:
-nTrials = 720
+nTrials = len(VWMTrials)
 directionCueTime = 0.2
 fixCrossTime = 0.1
 stimArrayTime = 0.1
