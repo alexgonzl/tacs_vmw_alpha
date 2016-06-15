@@ -1,108 +1,91 @@
-# K = S * ((H - F) / (1 - F))
+# K = S * (H - F)
 
 import csv
 from psychopy import data
+import os  # handy system and path functions
+import sys # to get file system encoding
 
-# Data file name stem
-filename = 'analysis/pilotTrials'
+# Ensure that relative paths start from the same directory as this script
+_thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
+os.chdir(_thisDir)
 
-thisExp = data.ExperimentHandler(name='dataAnalysis', version='', runtimeInfo=None,
-	    originPath=None,
-	    savePickle=True, saveWideText=True,
-	    dataFileName=filename)
+targ2 = {}
+n2targ = 0
+targ4 = {}
+n4targ = 0
+expName = ''
+expParticipant = ''
+expDate = ''
+with open('_tacsVWMAlpha.py_2016_May_24_2032.csv') as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=' ', quotechar='|')
+    for row in reader:
+		expName = row['expName']
+		expDate = row['date']
+		expParticipant = row['participant']
+		if row['nTargets'] == 2:
+			n2targ += 1
+			if row['testResponse'] == space and row['ChangeTrial'] == 1.0  and row['nDistractors'] == 0:
+				targ2['hitd0'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 1.0 and row['nDistractors'] == 2:
+				targ2['hitd2'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 1.0 and row['nDistractors'] == 4:
+				targ2['hitd4'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 0:
+				targ2['falsed0'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 2:
+				targ2['falsed2'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 4:
+				targ2['falsed4'] += 1
+		else:
+			n4targ += 1
+			if row['testResponse'] == space and row['ChangeTrial'] == 1.0 and row['nDistractors'] == 0:
+				targ4['hitd0'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 1.0 and row['nDistractors'] == 2:
+				targ4['hitd2'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 1.0 and row['nDistractors'] == 4:
+				targ4['hitd4'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 0:
+				targ4['falsed0'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 2:
+				targ4['falsed2'] += 1
+			elif row['testResponse'] == space and row['ChangeTrial'] == 0 and row['nDistractors'] == 4:
+				targ4['falsed4'] += 1
+	
+rHitt2d0 = targ2['hitd0'] / n2targ
+rHitt2d2 = targ2['hitd2'] / n2targ
+rHitt2d4 = targ2['hitd4'] / n2targ
+rHitt4d0 = targ4['hitd0'] / n2targ
+rHitt4d2 = targ4['hitd2'] / n2targ
+rHitt4d4 = targ4['hitd4'] / n2targ
+rFalset2d0 = targ2['falsed0'] / n2targ
+rFalset2d2 = targ2['falsed2'] / n2targ
+rFalset2d4 = targ2['falsed4'] / n2targ
+rFalset4d0 = targ4['falsed0'] / n2targ
+rFalset4d2 = targ4['falsed2'] / n2targ
+rFalset4d4 = targ4['falsed4'] / n2targ
+Kt2d0 = 2 * (rHitt2d0 - rFalset2d0)
+Kt2d2 = 4 * (rHitt2d2 - rFalset2d2)
+Kt2d4 = 6 * (rHitt2d4 - rFalset2d4)
+Kt4d0 = 4 * (rHitt4d0 - rFalset4d0)
+Kt4d2 = 6 * (rHitt4d2 - rFalset4d2)
+Kt4d4 = 8 * (rHitt4d4 - rFalset4d4)
 
-dataSheets = ['_tacsVWMAlpha.py_2016_May_26_1504_2.csv', '_tacsVWMAlpha.py_2016_May_26_1600.csv', 
-'_tacsVWMAlpha.py_2016_May_26_1620.csv', '_tacsVWMAlpha.py_2016_May_26_1639.csv', '_tacsVWMAlpha.py_2016_May_26_1700.csv', 
-'_tacsVWMAlpha.py_2016_May_26_1720.csv', '_tacsVWMAlpha.py_2016_May_26_1739.csv']
 
-for sheet in dataSheets:
-	targ2 = {}
-	targ2['hitd0'] = 0
-	targ2['hitd2'] = 0
-	targ2['hitd4'] = 0
-	targ2['falsed0'] = 0
-	targ2['falsed2'] = 0
-	targ2['falsed4'] = 0
-	targ2['change'] = 0
-	targ2['noChange'] = 0
-	targ4 = {}
-	targ4['hitd0'] = 0
-	targ4['hitd2'] = 0
-	targ4['hitd4'] = 0
-	targ4['falsed0'] = 0
-	targ4['falsed2'] = 0
-	targ4['falsed4'] = 0
-	targ4['change'] = 0
-	targ4['noChange'] = 0
-	expName = ''
-	expParticipant = ''
-	expDate = ''
-	with open(sheet) as csvfile:
-	    reader = csv.DictReader(csvfile)
-	    for row in reader:
-			expName = row['expName']
-			expDate = row['date']
-			expParticipant = row['participant']
-			if row['nTargets'] == '2':
-				if row['ChangeTrial'] == '1':
-					targ2['change'] += 1
-				else:
-					targ2['noChange'] += 1
-				if row['Response key'] == 'space' and row['ChangeTrial'] == '1'  and row['nDistractors'] == '0':
-					targ2['hitd0'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '1' and row['nDistractors'] == '2':
-					targ2['hitd2'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '1' and row['nDistractors'] == '4':
-					targ2['hitd4'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '0':
-					targ2['falsed0'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '2':
-					targ2['falsed2'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '4':
-					targ2['falsed4'] += 1
-			else:
-				if row['ChangeTrial'] == '1':
-					targ4['change'] += 1
-				else:
-					targ4['noChange'] += 1
-				if row['Response key'] == 'space' and row['ChangeTrial'] == '1' and row['nDistractors'] == '0':
-					targ4['hitd0'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '1' and row['nDistractors'] == '2':
-					targ4['hitd2'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '1' and row['nDistractors'] == '4':
-					targ4['hitd4'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '0':
-					targ4['falsed0'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '2':
-					targ4['falsed2'] += 1
-				elif row['Response key'] == 'space' and row['ChangeTrial'] == '0' and row['nDistractors'] == '4':
-					targ4['falsed4'] += 1	
-	rHitt2d0 = float(targ2['hitd0']) / targ2['change']
-	rHitt2d2 = float(targ2['hitd2']) / targ2['change']
-	rHitt2d4 = float(targ2['hitd4']) / targ2['change']
-	rHitt4d0 = float(targ4['hitd0']) / targ4['change']
-	rHitt4d2 = float(targ4['hitd2']) / targ4['change']
-	rHitt4d4 = float(targ4['hitd4']) / targ4['change']
-	rFalset2d0 = float(targ2['falsed0']) / targ2['noChange']
-	rFalset2d2 = float(targ2['falsed2']) / targ2['noChange']
-	rFalset2d4 = float(targ2['falsed4']) / targ2['noChange']
-	rFalset4d0 = float(targ4['falsed0']) / targ4['noChange']
-	rFalset4d2 = float(targ4['falsed2']) / targ4['noChange']
-	rFalset4d4 = float(targ4['falsed4']) / targ4['noChange']
-	Kt2d0 = 2 * ((rHitt2d0 - rFalset2d0) / (1 - rFalset2d0))
-	Kt2d2 = 2 * ((rHitt2d2 - rFalset2d2) / (1 - rFalset2d2))
-	Kt2d4 = 2 * ((rHitt2d4 - rFalset2d4) / (1 - rFalset2d4))
-	Kt4d0 = 4 * ((rHitt4d0 - rFalset4d0) / (1 - rFalset4d0))
-	Kt4d2 = 4 * ((rHitt4d2 - rFalset4d2) / (1 - rFalset4d2))
-	Kt4d4 = 4 * ((rHitt4d4 - rFalset4d4) / (1 - rFalset4d4))
+# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
+filename = _thisDir + os.sep + u'analysis/pilotTrials'
 
-	thisExp.addData('participant', expParticipant)
-	thisExp.addData('Kt2d0', Kt2d0)
-	thisExp.addData('Kt2d2', Kt2d2)
-	thisExp.addData('Kt2d4', Kt2d4)
-	thisExp.addData('Kt4d0', Kt4d0)
-	thisExp.addData('Kt4d2', Kt4d2)
-	thisExp.addData('Kt4d4', Kt4d4)
-	thisExp.addData('date', expDate)
-	thisExp.addData('expName', expName)
-	thisExp.nextEntry()
+thisExp = data.ExperimentHandler(name=expName, version='', runtimeInfo=None,
+    originPath=None,
+    savePickle=True, saveWideText=True,
+    dataFileName=filename)
+
+thisExp.addData('participant', expParticipant)
+thisExp.addData('Kt2d0', Kt2d0)
+thisExp.addData('Kt2d2', Kt2d2)
+thisExp.addData('Kt2d4', Kt2d4)
+thisExp.addData('Kt4d0', Kt4d0)
+thisExp.addData('Kt4d2', Kt4d2)
+thisExp.addData('Kt4d4', Kt4d4)
+thisExp.nextEntry()
+
+thisExp.saveAsExcel(filename, sheetName='expAnalysis', stimOut=None, dataOut=('n', 'all_mean', 'all_std', 'all_raw'), matrixOnly=False, appendFile=True, fileCollisionMethod='rename')
