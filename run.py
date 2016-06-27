@@ -1,4 +1,4 @@
-from setup import oneTrial, VWMTrials
+from setup import oneTrial, VWMTrials, win, core
 
 nTrials = len(VWMTrials)
 
@@ -6,6 +6,5 @@ nTrials = len(VWMTrials)
 for i in range(nTrials):
     oneTrial(i)
 
-thisExp.saveAsExcel(filename, sheetName='expData', stimOut=None, dataOut=('n', 'all_mean', 'all_std', 'all_raw'), matrixOnly=False, appendFile=True, fileCollisionMethod='rename')
 win.close()
 core.quit()

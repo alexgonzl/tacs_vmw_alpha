@@ -19,7 +19,7 @@ MonitorWidth =  NSScreen.mainScreen().frame().size.width
 MonitorHeight = NSScreen.mainScreen().frame().size.height
 mon = monitors.Monitor('VWMTaskMonitor')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
-mon.setSizePix([MonitorWidth,MonitorHeight]) 
+mon.setSizePix([MonitorWidth,MonitorHeight])
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
 mon.setDistance(100)
 
@@ -84,7 +84,7 @@ nTrialsPerSubCond    = {}
 for cond in conds:
     nTrialsPerSubCond[cond] = nTrialsPerCond[cond]/nSubCondsPerCond[cond]
 
-# sub-condition target/distractors pairings; note that these are all indexed/key by condition 
+# sub-condition target/distractors pairings; note that these are all indexed/key by condition
 CondsTargetQuadrants = {}
 CondsDistraQuadrants = {}
 quadTargDisOverlap   = {}
@@ -93,9 +93,9 @@ quadTargDisOverlap   = {}
 allquadsLocs        = np.array([1,2,3,4],np.int)
 quadLocs            = np.array([[1,3],[2,4],[2,3],[1,4]],np.int) # avoids (1,2), (3,4) pairings
 for cond in conds:
-    nn = nSubCondsPerCond[cond]    
+    nn = nSubCondsPerCond[cond]
     quadTargDisOverlap[cond]   = np.zeros([nn,4],np.int)
-    if cond==1: # 2 targets 0 distractors (4 sub-conditions)        
+    if cond==1: # 2 targets 0 distractors (4 sub-conditions)
         CondsTargetQuadrants[cond]  = quadLocs
         CondsDistraQuadrants[cond]  = np.zeros([nn,2],np.int)
     elif cond==2: # 2 targets 2 distractors (16 sub-conditions)
@@ -103,7 +103,7 @@ for cond in conds:
         CondsTargetQuadrants[cond] = np.zeros([nn,2],np.int)
         CondsDistraQuadrants[cond] = np.zeros([nn,2],np.int)
         subcond = 0
-        for jj in range(n): 
+        for jj in range(n):
             for ii in range(n):
                 CondsTargetQuadrants[cond][subcond] = quadLocs[jj]
                 CondsDistraQuadrants[cond][subcond] = quadLocs[ii]
@@ -144,7 +144,7 @@ class VWMObj():
             self.color      = 'mediumblue'
         else:
             self.color      = 'black'
-        
+
         self.centerLoc      = centerLoc
         self.orientation    = orientation
         self.objID          = objID
@@ -158,13 +158,13 @@ class VWMObj():
 
     def getOrientation(self):
         return self.orientation
-    
+
     def getObjID(self):
         return self.objID
-    
+
     def getColor(self):
         return self.color
-    
+
     def objType(self):
         return self.objType
 
@@ -207,7 +207,7 @@ for cond in conds:
     TrialCondIDs[trials] = cond
     ChangeTrialIDs[np.random.choice(trials,nTrialsPerCond[cond]/2,replace=False)]=1
     nTrialObjs[trials] = nTotalObjsPerCond[cond]
-    
+
     # assign subconditions to trials
     AvailableTrials2 = np.array(trials)
     for subcond in range(nSubCondsPerCond[cond]):
@@ -226,7 +226,7 @@ for tt in range(nTrials):
     subCond     = int(TrialSubCondID[tt])-1
     nT          = nTargetsInCond[cond]
     nD          = nDistractorsInCond[cond]
-    
+
     TargsQuad   = CondsTargetQuadrants[cond][subCond]
     DistracQuad = CondsDistraQuadrants[cond][subCond]
     quadOverlap = quadTargDisOverlap[cond][subCond]
@@ -262,7 +262,7 @@ for tt in range(nTrials):
     DistractorPos[tt] = trialDisPos
 
 
-# set orietantions 
+# set orietantions
 # orientations sampled at random from PossibleOrientations array
 ObjectOrietations = {};
 for tt in range(nTrials):
@@ -273,23 +273,23 @@ for tt in range(nTrials):
 VWMTrials = []
 for tt in range(nTrials):
     VWMTrials.append(VWMTrial(tt,TrialCondIDs[tt],ChangeTrialIDs[tt]))
-    
+
     # TODO: change into more efficient code (this can be a one liner...)
     if ChangeTrialIDs[tt]==1:
         if np.random.random()>0.5:
             VWMTrials[tt].ChangeTargSign=1
         else:
             VWMTrials[tt].ChangeTargSign=-1
-    changeTargID = np.random.randint(VWMTrials[tt].nTargets - 1, size=1)
+    changeTargID = np.random.randint(VWMTrials[tt].nTargets, size=1)
     VWMTrials[tt].ChangeTargID = changeTargID[0]
 
     targCnt = 0
     distCnt = 0
     for obj in range (VWMTrials[tt].nTotalItems):
         VWMTrials[tt].Objects[obj].rect.ori = ObjectOrietations[tt][obj]
-        if VWMTrials[tt].ObjTarg[obj]==1: 
+        if VWMTrials[tt].ObjTarg[obj]==1:
             VWMTrials[tt].Objects[obj].rect.pos = TargetPos[tt][targCnt]
-            targCnt +=1            
+            targCnt +=1
         else:
             VWMTrials[tt].Objects[obj].rect.pos = DistractorPos[tt][distCnt]
             distCnt +=1
@@ -325,6 +325,9 @@ thisExp = data.ExperimentHandler(name=expName, version='',
     originPath=None,
     savePickle=True, saveWideText=True,
     dataFileName=filename)
+
+#TODO
+actualChange = np.zeros(nTrials)
 
 # Global Constants:
 directionCueTime = 0.2
@@ -377,26 +380,26 @@ cross4 = makeCross()
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
+routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine
 
 # Initialize run method
 
 def oneTrial(i):
 #------Prepare to start Routine "direct_cue"-------
     t = 0 # time in seconds
-    direct_cueClock.reset()  # clock 
+    direct_cueClock.reset()  # clock
     routineTimer.add(directionCueTime)
     # update component parameters for each repeat
     # keep track of which components have finished
     directionalCue.status = NOT_STARTED
-    
+
     #-------Start Routine "direct_cue"-------
     continueRoutine = True
     while routineTimer.getTime() > 0:
         # get current time for data saving
         t = direct_cueClock.getTime()
         # update/draw components on each frame
-        
+
         # *directionalCue* updates
         if directionalCue.status == NOT_STARTED:
             # keep track of start time for later
@@ -405,17 +408,17 @@ def oneTrial(i):
         if directionalCue.status == STARTED and t >= (directionCueTime-win.monitorFramePeriod*0.75): #most of one frame period left
             directionalCue.setAutoDraw(False)
             continueRoutine = False
-        
+
         if continueRoutine:
             win.flip() # refreshes the screen
 
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
-    
+
     #-------Ending Routine "direct_cue"-------
     directionalCue.setAutoDraw(False)
-    
+
     #------Prepare to start Routine "fix_cross"-------
     t = 0
     fix_crossClock.reset()  # clock
@@ -423,14 +426,14 @@ def oneTrial(i):
     # update component parameters for each repeat
     # keep track of which components have finished
     cross1.status = NOT_STARTED
-    
+
     #-------Start Routine "fix_cross"-------
     continueRoutine = True
     while routineTimer.getTime() > 0:
         # get current time
         t = fix_crossClock.getTime()
         # update/draw components on each frame
-        
+
         # *cross1* updates
         if t >= 0.0 and cross1.status == NOT_STARTED:
             # keep track of start time for later
@@ -439,17 +442,17 @@ def oneTrial(i):
         if cross1.status == STARTED and t >= (fixCrossTime-win.monitorFramePeriod*0.75): #most of one frame period left
             cross1.setAutoDraw(False)
             continueRoutine = False
-        
+
         if continueRoutine:
             win.flip() # refreshes the screen
 
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
-    
+
     #-------Ending Routine "fix_cross"-------
     cross1.setAutoDraw(False)
-    
+
     #------Prepare to start Routine "stim_array"-------
     t = 0
     stim_arrayClock.reset()  # clock
@@ -462,14 +465,14 @@ def oneTrial(i):
         stim_arrayComponents.append(rect)
     for thisComponent in stim_arrayComponents:
         thisComponent.status = NOT_STARTED
-    
+
     #-------Start Routine "stim_array"-------
     continueRoutine = True
     while continueRoutine and routineTimer.getTime() > 0:
         # get current time
         t = stim_arrayClock.getTime()
         # update/draw components on each frame
-        
+
         # *cross3* updates
         if t >= 0.0 and cross3.status == NOT_STARTED:
             # keep track of start time for later
@@ -484,7 +487,7 @@ def oneTrial(i):
                 # keep track of start time for later
                 rect.tStart = t  # underestimates by a little under one frame
                 rect.setAutoDraw(True)
-        
+
         if t >= (0.0 + (stimArrayTime-win.monitorFramePeriod*0.75)): #most of one frame period left
             for rect in rectsPerTrial[i]:
                 rect.setAutoDraw(False)
@@ -497,11 +500,11 @@ def oneTrial(i):
             if thisComponent.status != FINISHED:
                 continueRoutine = True
                 break  # at least one component has not yet finished
-        
+
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
-        
+
         # refresh the screen
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
@@ -509,7 +512,7 @@ def oneTrial(i):
     #-------Ending Routine "stim_array"-------
     for thisComponent in stim_arrayComponents:
         thisComponent.setAutoDraw(False)
-    
+
     #------Prepare to start Routine "reten_time"-------
     t = 0
     reten_timeClock.reset()  # clock
@@ -517,14 +520,14 @@ def oneTrial(i):
     # update component parameters for each repeat
     # keep track of which components have finished
     cross2.status = NOT_STARTED
-    
+
     #-------Start Routine "reten_time"-------
     continueRoutine = True
     while routineTimer.getTime() > 0:
         # get current time
         t = reten_timeClock.getTime()
         # update/draw components on each frame
-        
+
         # *cross2* updates
         if t >= 0.0 and cross2.status == NOT_STARTED:
             # keep track of start time for later
@@ -533,17 +536,17 @@ def oneTrial(i):
         if cross2.status == STARTED and t >= (retentionTime-win.monitorFramePeriod*0.75): #most of one frame period left
             cross2.setAutoDraw(False)
             continueRoutine = False
-        
+
         if continueRoutine:
             win.flip() # refreshes the screen
 
         # check for quit (the Esc key)
         if event.getKeys(keyList=["escape"]):
             core.quit()
-    
+
     #-------Ending Routine "reten_time"-------
     cross2.setAutoDraw(False)
-    
+
     #------Prepare to start Routine "test_array"-------
     t = 0
     test_arrayClock.reset()  # clock
@@ -555,17 +558,16 @@ def oneTrial(i):
     test_arrayComponents = []
     test_arrayComponents.append(testResponse)
     test_arrayComponents.append(cross4)
-    cnt = 0
     slideRects = []
     for rect in rectsPerTrial[i]:
-        if VWMTrials[i].ChangeTrial == 1 and cnt == VWMTrials[i].ChangeTargID:
-            rect.ori += VWMTrials[i].ChangeTargSign * rotation
-            cnt += 1
         test_arrayComponents.append(rect)
         slideRects.append(rect)
+    if VWMTrials[i].ChangeTrial == 1:
+        slideRects[VWMTrials[i].ChangeTargID].ori += VWMTrials[i].ChangeTargSign * rotation
+        actualChange[i] = 1 ##TODO
     for thisComponent in test_arrayComponents:
         thisComponent.status = NOT_STARTED
-    
+
     #-------Start Routine "test_array"-------
     continueRoutine = True
     while continueRoutine and routineTimer.getTime() > 0:
@@ -573,18 +575,18 @@ def oneTrial(i):
         # get current time
         t = test_arrayClock.getTime()
         # update/draw components on each frame
-        
+
         # *Rects* updates
         for rect in slideRects:
             if t >= 0.0 and rect.status == NOT_STARTED:
                 # keep track of start time for later
                 rect.tStart = t  # underestimates by a little under one frame
                 rect.setAutoDraw(True)
-        
+
         if t >= (0.0 + (testArrayTime-win.monitorFramePeriod*0.75)): #most of one frame period left
             for rect in rectsPerTrial[i]:
-                rect.setAutoDraw(False)            
-        
+                rect.setAutoDraw(False)
+
         # *cross4* updates
         if t >= 0.0 and cross4.status == NOT_STARTED:
             # keep track of start time for later
@@ -605,14 +607,14 @@ def oneTrial(i):
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
             theseKeys = event.getKeys(keyList=['space'])
-            
+
             # check for quit:
             if "escape" in theseKeys:
                 endExpNow = True
             if len(theseKeys) > 0:  # at least one key was pressed
                 testResponse.keys = theseKeys[-1]  # just the last key pressed
-                testResponse.rt = testResponse.clock.getTime()                
-                         
+                testResponse.rt = testResponse.clock.getTime()
+
         # check if all components have finished
         if not continueRoutine:  # a component has requested a forced-end of Routine
             break
@@ -621,15 +623,15 @@ def oneTrial(i):
             if thisComponent.status != FINISHED:
                 continueRoutine = True
                 break  # at least one component has not yet finished
-        
+
         # check for quit (the Esc key)
         if endExpNow or event.getKeys(keyList=["escape"]):
             core.quit()
-        
+
         # refresh the screen
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
-    
+
     #-------Ending Routine "test_array"-------
     for thisComponent in test_arrayComponents:
         if hasattr(thisComponent, 'setAutoDraw'):
@@ -646,6 +648,8 @@ def oneTrial(i):
     if testResponse.keys != None:  # we had a response
         thisExp.addData('RT', testResponse.rt)
     thisExp.addData('ChangeTrial', VWMTrials[i].ChangeTrial)
+    thisExp.addData('ActualChange', actualChange[i])
+    thisExp.addData('ChangeTargID', VWMTrials[i].ChangeTargID)
     thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
     thisExp.addData('condNum', VWMTrials[i].condNum)
