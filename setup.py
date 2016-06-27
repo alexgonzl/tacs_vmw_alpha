@@ -1,7 +1,6 @@
 # imports for setup
 from __future__ import division  # so that 1/3=0.333 instead of 1/3=0
 import numpy as np
-from math import atan2, degrees
 from AppKit import NSScreen
 from psychopy import visual, monitors, tools, data, core, event #, gui
 from psychopy.tools import coordinatetools as coord
@@ -11,17 +10,10 @@ import os
 import sys
 
 # Constants
-SubjDistance    = 100.0  # in cm
-MonitorWidthCM  = 27.94  # in cm
 nTrials         = 368
 # get monitor dimensions in pixels
 MonitorWidth =  NSScreen.mainScreen().frame().size.width
 MonitorHeight = NSScreen.mainScreen().frame().size.height
-mon = monitors.Monitor('VWMTaskMonitor')
-mon.setDistance(SubjDistance) # centimeters of between monitor and subject
-mon.setSizePix([MonitorWidth,MonitorHeight])
-mon.setWidth(MonitorWidthCM) # width in pixels of the monitor.
-mon.setDistance(100)
 
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__)).decode(sys.getfilesystemencoding())
@@ -45,7 +37,7 @@ thisExp = data.ExperimentHandler(name='setup_' + expName, version='', runtimeInf
     dataFileName=filename)
 
 # set window
-win = visual.Window(size=(1280, 800), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # Targets and distractors sets
