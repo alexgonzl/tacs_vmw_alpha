@@ -9,6 +9,7 @@ import random
 import os
 import sys
 
+
 # Constants
 nTrials         = 368
 # get monitor dimensions in pixels
