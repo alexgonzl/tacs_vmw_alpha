@@ -1,4 +1,6 @@
-from setup import oneTrial, VWMTrials, win, core
+from conditionSetup import win
+from timingSetup import oneTrial, VWMTrials
+from psychopy import core
 
 nTrials = len(VWMTrials)
 
