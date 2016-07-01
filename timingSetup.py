@@ -1,21 +1,43 @@
 # imports for timingSetup
 from __future__ import division  # so that 1/3=0.333 instead of 1/3=0
-from psychopy import visual, data, core, event
+from AppKit import NSScreen
+from psychopy import visual, data, core, event, monitors
 from psychopy.constants import *  # things like STARTED, FINISHED
-from conditionSetup import rectsPerTrial, VWMTrials, win
 import os
 from os.path import expanduser
+import cPickle as pickle
+import sys
+sys.dont_write_bytecode = True
+import vwmClasses
 
-# make filename based on date
+#########  Monitor Settings  ##################
+MonitorWidth =  NSScreen.mainScreen().frame().size.width
+MonitorHeight = NSScreen.mainScreen().frame().size.height
+SubjDistance = 100 # distance from the screen in centimeters
+MonitorWidthCM  = 27.94  # in cm
+# set up window
+mon = monitors.Monitor('')
+mon.setDistance(SubjDistance) # centimeters of between monitor and subject
+mon.setSizePix([MonitorWidth,MonitorHeight])
+mon.setWidth(MonitorWidthCM) # width in pixels of the monitor
+win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+                    monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
+
+# behav trial run for data saving
+behavRun = 'behav3'
+
+# make filenames based on date and terminal input
 date = data.getDateStr()
 homeDirectory = expanduser("~")
-filename = homeDirectory + os.sep + 'vwmtest/data/vwm_run_' + date
+saveDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data'
+filename = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'runData/run' + sys.argv[2] + "_" + date
+pickleFilename = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'setupData/subj' + sys.argv[1] + 'run' + sys.argv[2] + '.p'
 
-# An ExperimentHandler isn't essential but helps with data saving
+# ExperimentHandler conducts data saving
 thisExp = data.ExperimentHandler(name='run', version='',
     extraInfo=None, runtimeInfo=None,
     originPath=None,
-    savePickle=True, saveWideText=True,
+    savePickle=False, saveWideText=True,
     dataFileName=filename)
 
 # Global Constants:
@@ -26,6 +48,30 @@ retentionTime = 1.0
 testArrayTime = 1.0
 itiTime = 0.6
 rotation = 45
+
+# Load VWMTrials data structure from setup pickle
+VWMTrials = pickle.load(open(pickleFilename, "r" ))
+nTrials = len(VWMTrials)
+
+# Define vwm class from visual.Rect()
+def vwmRect(orientation, centerLoc, color):
+    return visual.Rect(win=win, name=None,
+    width=.5, height=1.5, ori=orientation,
+    pos=centerLoc, lineWidth=1, lineColor=color, lineColorSpace='rgb',
+    fillColor=color, fillColorSpace='rgb', opacity=1, depth=-1.0, interpolate=True)
+
+# Initialize array of all rectangles per trial
+rectsPerTrial = []
+for trial in VWMTrials:
+    trialObjsArray = trial.Objects
+    rects = []
+    for obj in trialObjsArray:
+        ori = obj.getOrientation()
+        loc = obj.getLoc()
+        color = obj.getColor()
+        rect = vwmRect(ori, loc, color)
+        rects.append(rect)
+    rectsPerTrial.append(rects)
 
 # Define fixation cross graphic
 def makeCross():
@@ -51,7 +97,6 @@ cross1 = makeCross()
 stim_arrayClock = core.Clock()
 cross3 = makeCross()
 
-
 # Initialize components for Routine "reten_time"
 reten_timeClock = core.Clock()
 cross2 = makeCross()
@@ -64,7 +109,7 @@ cross4 = makeCross()
 globalClock = core.Clock()  # to track the time since experiment started
 routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine
 
-# Setup run method
+######## Define run method ########
 
 def oneTrial(i):
 #------Prepare to start Routine "direct_cue"-------
@@ -321,10 +366,19 @@ def oneTrial(i):
     if testResponse.keys in ['', [], None]:  # No response was made
        testResponse.keys=None
 
-    #-------Store data for thisExp (ExperimentHandler)-------
+    # record hemifield of change targ and # of distractors in that hemifield
+    changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].ChangeTargID].getHemifield()
+    distractorCount = 0
+    for obj in VWMTrials[i].Objects:
+        if obj.objType == 'distractor' and obj.getHemifield() == changeTargHemi:
+            distractorCount += 1
+
+    # mark response
     resp = 0
     if testResponse.keys == 'space':
         resp = 1
+
+    #-------Store data for thisExp (ExperimentHandler)-------
     thisExp.addData('trialID', VWMTrials[i].trialID)
     thisExp.addData('Response',resp)
     if testResponse.keys != None:  # we had a response
@@ -334,5 +388,6 @@ def oneTrial(i):
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
     thisExp.addData('condNum', VWMTrials[i].condNum)
     if VWMTrials[i].ChangeTrial == 1:
-        thisExp.addData('changePos', slideRects[VWMTrials[i].ChangeTargID].pos)
+        thisExp.addData('changeHemi', changeTargHemi)
+        thisExp.addData('distNumInHemi', distractorCount)
     thisExp.nextEntry()
