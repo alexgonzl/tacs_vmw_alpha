@@ -79,9 +79,9 @@ class VWMTrial():
         self.nTotalItems    = self.nDistractors + self.nTargets
         self.ChangeTrial    = Change
         self.ChangeTargID   = 1
-        self.ChangeTargSign = 0
         self.Objects        = []
         self.ObjTarg        = np.zeros(self.nTotalItems,np.int)
+        self.rotation       = 0
         cnt = 0
         for obj in range(self.nTargets):
             self.Objects.append(VWMObj('target',cnt))

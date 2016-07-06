@@ -25,10 +25,20 @@ np.random.seed(seed=subjHash)
 
 ####### Constants ######
 nTrials         = 368
-behavRun = 'behav3'
+behavRun = 'behav4'
+oriConstraint = False
+rotation = 45
 
 # Set orientations and location for each item
-PossibleObjOrientations  = np.concatenate((np.arange(10,81),np.arange(100,171)))
+if oriConstraint:
+    if rotation == 30:
+        PossibleObjOrientations = range(3,28) + range(33,58) + range(63,88) + range(93,118) + range(123,148) + range(153,178)
+    elif rotation == 45:
+        PossibleObjOrientations = range(4,42) + range(49,87) + range(94,132) + range(139,177)
+    elif rotation == 90:
+        PossibleObjOrientations = range(10,81)+ range(100,171)
+else:
+    PossibleObjOrientations  = range(1,181)
 PossibleObjRadix         = np.array([2, 4])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                     np.arange(200,251),np.arange(290,341)))
@@ -174,9 +184,9 @@ for tt in range(nTrials):
     # assign target rotation direction
     if ChangeTrialIDs[tt]==1:
         if np.random.random()>0.5:
-            VWMTrials[tt].ChangeTargSign=1
+            VWMTrials[tt].rotation = rotation
         else:
-            VWMTrials[tt].ChangeTargSign=-1
+            VWMTrials[tt].rotation = rotation * -1
     changeTargID = np.random.randint(VWMTrials[tt].nTargets, size=1)
     VWMTrials[tt].ChangeTargID = changeTargID[0]
 

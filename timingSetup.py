@@ -24,7 +24,7 @@ win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, 
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
-behavRun = 'behav3'
+behavRun = 'behav4'
 
 # make filenames based on date and terminal input
 date = data.getDateStr()
@@ -47,7 +47,6 @@ stimArrayTime = 0.1
 retentionTime = 1.0
 testArrayTime = 1.0
 itiTime = 0.6
-rotation = 45
 
 # Load VWMTrials data structure from setup pickle
 VWMTrials = pickle.load(open(pickleFilename, "r" ))
@@ -290,7 +289,7 @@ def oneTrial(i):
         test_arrayComponents.append(rect)
         slideRects.append(rect)
     if VWMTrials[i].ChangeTrial == 1:
-        slideRects[VWMTrials[i].ChangeTargID].ori += VWMTrials[i].ChangeTargSign * rotation
+        slideRects[VWMTrials[i].ChangeTargID].ori += VWMTrials[i].rotation
     for thisComponent in test_arrayComponents:
         thisComponent.status = NOT_STARTED
 
