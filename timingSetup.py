@@ -24,7 +24,7 @@ win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, 
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
-behavRun = 'behav4'
+behavRun = 'stim1'
 
 # make filenames based on date and terminal input
 date = data.getDateStr()

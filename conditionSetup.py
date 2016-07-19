@@ -25,8 +25,8 @@ np.random.seed(seed=subjHash)
 
 ####### Constants ######
 nTrials         = 368
-behavRun = 'behav4'
-oriConstraint = False
+behavRun = 'stim1'
+oriConstraint = True
 rotation = 45
 
 # Set orientations and location for each item
