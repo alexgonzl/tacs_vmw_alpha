@@ -91,3 +91,21 @@ class VWMTrial():
             self.Objects.append(VWMObj('distractor',cnt))
             self.ObjTarg[cnt]=0
             cnt+=1
+
+    def leftObjectCount(self, objType='all'):
+        leftCount = 0
+        for obj in self.Objects:
+            if objType == 'all' and obj.getHemifield() == 'left':
+                leftCount += 1
+            elif obj.objType == objType and obj.getHemifield() == 'left':
+                leftCount += 1
+        return leftCount
+
+    def rightObjectCount(self, objType='all'):
+        rightCount = 0
+        for obj in self.Objects:
+            if objType == 'all' and obj.getHemifield() == 'right':
+                rightCount += 1
+            elif obj.objType == objType and obj.getHemifield() == 'right':
+                rightCount += 1
+        return rightCount

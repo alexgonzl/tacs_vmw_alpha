@@ -11,16 +11,16 @@ sys.dont_write_bytecode = True
 import vwmClasses
 
 #########  Monitor Settings  ##################
-MonitorWidth =  NSScreen.mainScreen().frame().size.width
-MonitorHeight = NSScreen.mainScreen().frame().size.height
-SubjDistance = 100 # distance from the screen in centimeters
-MonitorWidthCM  = 27.94  # in cm
+MonitorWidth =  NSScreen.screens()[1].frame().size.width
+MonitorHeight = NSScreen.screens()[1].frame().size.height
+SubjDistance = 55 # distance from the screen in centimeters
+MonitorWidthCM  = 60  # in cm
 # set up window
 mon = monitors.Monitor('')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
 mon.setSizePix([MonitorWidth,MonitorHeight])
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor
-win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=False, screen=1, allowGUI=False, allowStencil=False,
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
@@ -55,7 +55,7 @@ nTrials = len(VWMTrials)
 # Define vwm class from visual.Rect()
 def vwmRect(orientation, centerLoc, color):
     return visual.Rect(win=win, name=None,
-    width=.5, height=1.5, ori=orientation,
+    width=1, height=3, ori=orientation,
     pos=centerLoc, lineWidth=1, lineColor=color, lineColorSpace='rgb',
     fillColor=color, fillColorSpace='rgb', opacity=1, depth=-1.0, interpolate=True)
 
@@ -76,7 +76,7 @@ for trial in VWMTrials:
 def makeCross():
     return visual.TextStim(win=win, ori=0,
     text=u'+',    font=u'Arial',
-    pos=[0, 0], height=1.0, wrapWidth=None,
+    pos=[0, 0], height=2.0, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
 
@@ -84,7 +84,7 @@ def makeCross():
 direct_cueClock = core.Clock()
 directionalCue = visual.TextStim(win=win, ori=0, name='text',
     text=u'\u2194',    font=u'Arial',
-    pos=[0, 0], height=1.0, wrapWidth=None,
+    pos=[0, 0], height=2.0, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
 
@@ -331,7 +331,7 @@ def oneTrial(i):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=['space'])
+            theseKeys = event.getKeys(keyList=None)
 
             # check for quit:
             if "escape" in theseKeys:
@@ -365,16 +365,16 @@ def oneTrial(i):
     if testResponse.keys in ['', [], None]:  # No response was made
        testResponse.keys=None
 
-    # record hemifield of change targ and # of distractors in that hemifield
+    # record # of targets and distractors in each hemifield and where change occured
     changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].ChangeTargID].getHemifield()
-    distractorCount = 0
-    for obj in VWMTrials[i].Objects:
-        if obj.objType == 'distractor' and obj.getHemifield() == changeTargHemi:
-            distractorCount += 1
+    leftTargCount = VWMTrials[i].leftObjectCount(objType='target')
+    leftDistCount = VWMTrials[i].leftObjectCount(objType='distractor')
+    rightTargCount = VWMTrials[i].rightObjectCount(objType='target')
+    rightDistCount = VWMTrials[i].rightObjectCount(objType='distractor')
 
     # mark response
     resp = 0
-    if testResponse.keys == 'space':
+    if testResponse.keys != None:
         resp = 1
 
     #-------Store data for thisExp (ExperimentHandler)-------
@@ -388,5 +388,8 @@ def oneTrial(i):
     thisExp.addData('condNum', VWMTrials[i].condNum)
     if VWMTrials[i].ChangeTrial == 1:
         thisExp.addData('changeHemi', changeTargHemi)
-        thisExp.addData('distNumInHemi', distractorCount)
+    thisExp.addData('leftTargs', leftTargCount)
+    thisExp.addData('rightTargs', rightTargCount)
+    thisExp.addData('leftDists', leftDistCount)
+    thisExp.addData('rightDists', rightDistCount)
     thisExp.nextEntry()
