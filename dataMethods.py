@@ -132,57 +132,80 @@ def dprime(csv):
 
     return dprimes
 
-# calculates hit rate for each condition for left hem change trials
-def leftHemHitRates(csv):
+# calculates hit rate for each condition for (parameter) hem change trials
+def hemHitRates(csv, hem):
     # read in csv file
     df = pd.read_csv(csv)
 
     # create boolean condition vectors of length nTrials
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
-    leftChanges = df['changeHemi'] == 'left'
-    nLeftTarg1 = df['leftTargs'] == 1
-    nLeftTarg2 = df['leftTargs'] == 2
-    nLeftDist0 = df['leftDists'] == 0
-    nLeftDist1 = df['leftDists'] == 1
-    nLeftDist2 = df['leftDists'] == 2
+    hemChanges = df['changeHemi'] == hem
+    nTarg1 = df[hem + 'Targs'] == 1
+    nTarg2 = df[hem + 'Targs'] == 2
+    nDist0 = df[hem + 'Dists'] == 0
+    nDist1 = df[hem + 'Dists'] == 1
+    nDist2 = df[hem + 'Dists'] == 2
 
     # condition dictionary
-    leftConds = OrderedDict([('t1d0', (nLeftTarg1, nLeftDist0)), ('t1d1', (nLeftTarg1, nLeftDist1)), ('t1d2', (nLeftTarg1, nLeftDist2)), ('t2d0', (nLeftTarg2, nLeftDist0)), ('t2d1', (nLeftTarg2, nLeftDist1)), ('t2d2', (nLeftTarg2, nLeftDist2))])
-    leftHitRates = OrderedDict()
+    hemConds = OrderedDict([('t1d0', (nTarg1, nDist0)), ('t1d1', (nTarg1, nDist1)), ('t1d2', (nTarg1, nDist2)), ('t2d0', (nTarg2, nDist0)), ('t2d1', (nTarg2, nDist1)), ('t2d2', (nTarg2, nDist2))])
+    hemHitRates = OrderedDict()
 
     # calculate hit rate
-    for key in leftConds:
-        hits = itemCounter(df, resps, leftChanges, leftConds[key][0], leftConds[key][1])
-        misses = itemCounter(df, noResps, leftChanges, leftConds[key][0], leftConds[key][1])
+    for key in hemConds:
+        hits = itemCounter(df, resps, hemChanges, hemConds[key][0], hemConds[key][1])
+        misses = itemCounter(df, noResps, hemChanges, hemConds[key][0], hemConds[key][1])
         hitRate = hits/(hits+misses)
-        leftHitRates[key] = hitRate
-    return leftHitRates
+        hemHitRates[key] = hitRate
+    return hemHitRates
 
-
-# calculates hit rate for each condition for right hem change trials
-def rightHemHitRates(csv):
+# calculates dPrimes for each condition for (parameter) hem change trials
+def hemdPrime(csv, hem):
     # read in csv file
     df = pd.read_csv(csv)
 
     # create boolean condition vectors of length nTrials
+    oppositeHem = ''
+    if hem == 'left':
+        oppositeHem = 'right'
+    else:
+        oppositeHem == 'left'
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
-    rightChanges = df['changeHemi'] == 'right'
-    nRightTarg1 = df['rightTargs'] == 1
-    nRightTarg2 = df['rightTargs'] == 2
-    nRightDist0 = df['rightDists'] == 0
-    nRightDist1 = df['rightDists'] == 1
-    nRightDist2 = df['rightDists'] == 2
+    hemChanges = df['changeHemi'] == hem
+    noChanges = df['ChangeTrial'] == 0
+    nTarg1 = df[hem + 'Targs'] == 1
+    nTarg2 = df[hem + 'Targs'] == 2
+    nDist0 = df[hem + 'Dists'] == 0
+    nDist1 = df[hem + 'Dists'] == 1
+    nDist2 = df[hem + 'Dists'] == 2
 
     # condition dictionary
-    rightConds = OrderedDict([('t1d0', (nRightTarg1, nRightDist0)), ('t1d1', (nRightTarg1, nRightDist1)), ('t1d2', (nRightTarg1, nRightDist2)), ('t2d0', (nRightTarg2, nRightDist0)), ('t2d1', (nRightTarg2, nRightDist1)), ('t2d2', (nRightTarg2, nRightDist2))])
-    rightHitRates = OrderedDict()
+    hemConds = OrderedDict([('t1d0', (nTarg1, nDist0)), ('t1d1', (nTarg1, nDist1)), ('t1d2', (nTarg1, nDist2)), ('t2d0', (nTarg2, nDist0)), ('t2d1', (nTarg2, nDist1)), ('t2d2', (nTarg2, nDist2))])
+    hemdPrimes = OrderedDict()
 
     # calculate hit rate
-    for key in rightConds:
-        hits = itemCounter(df, resps, rightChanges, rightConds[key][0], rightConds[key][1])
-        misses = itemCounter(df, noResps, rightChanges, rightConds[key][0], rightConds[key][1])
+    for key in hemConds:
+        hits = itemCounter(df, resps, hemChanges, hemConds[key][0], hemConds[key][1])
+        misses = itemCounter(df, noResps, hemChanges, hemConds[key][0], hemConds[key][1])
+        falarms = itemCounter(df, resps, noChanges, hemConds[key][0], hemConds[key][1])
+        crejects = itemCounter(df, noResps, noChanges, hemConds[key][0], hemConds[key][1])
+
+        # Floors an ceilings are replaced by half hits and half FA's
+        halfHit = 0.5/(hits+misses)
+        halfFa = 0.5/(falarms+crejects)
+
+        # Calculate hitrate and avoid d' infinity
         hitRate = hits/(hits+misses)
-        rightHitRates[key] = hitRate
-    return rightHitRates
+        if hitRate == 1: hitRate = 1-halfHit
+        if hitRate == 0: hitRate = halfHit
+
+        # Calculate false alarm rate and avoid d' infinity
+        faRate = falarms/(falarms+crejects)
+        if faRate == 1: faRate = 1-halfFa
+        if faRate == 0: faRate = halfFa
+
+        # calculate dprime using Z (ppf function in scipy.norm)
+        hemdPrimes[key]= Z(hitRate) - Z(faRate)
+
+    return hemdPrimes
