@@ -44,7 +44,7 @@ PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                     np.arange(200,251),np.arange(290,341)))
 
 # dictionary for # of trials and # of subcondtions
-nTrialsPerCond       = {1:44, 2:96, 3:44, 4:50, 5:84 ,6:50}
+nTrialsPerCond       = {1:44, 2:96, 3:44, 4:50, 5:84, 6:50}
 nSubCondsPerCond     = {1:4,2:16,3:4,4:1,5:4,6:1}
 assert sum(nTrialsPerCond.values()) == nTrials
 # eg. conditon 1 has 4 subconditions related target/distractor positioning
