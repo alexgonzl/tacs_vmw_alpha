@@ -15,7 +15,7 @@ nDistractorsInCond  = {}
 cnt = 1;
 for ts in range(TargetSets.size):
     for ds in range(DistractorSets.size):
-        conds[cnt]              = 'nT' + str(TargetSets[ts]) + 'nD' + str(DistractorSets[ds])
+        conds[cnt]              = 'T' + str(TargetSets[ts]) + 'D' + str(DistractorSets[ds])
         nTargetsInCond[cnt]     = TargetSets[ts]
         nDistractorsInCond[cnt] = DistractorSets[ds]
         nTotalObjsPerCond[cnt]  = int(nTargetsInCond[cnt]+nDistractorsInCond[cnt])
@@ -71,14 +71,21 @@ class VWMObj():
 ###  Visual Working Memory Trial Class
 class VWMTrial():
     """trial properties for VWM alpha tACS """
-    def __init__(self, trialID, condNum, Change):
+    def __init__(self, trialID, condNum, ChangeCond ,ChangeTargID):
         self.trialID        = trialID
         self.condNum        = condNum
+        self.HFCond         = condNum 
         self.nTargets       = nTargetsInCond[condNum]
         self.nDistractors   = nDistractorsInCond[condNum]
         self.nTotalItems    = self.nDistractors + self.nTargets
-        self.ChangeTrial    = Change
-        self.ChangeTargID   = 1
+        self.ChangeCond     = ChangeCond        
+        if ChangeCond==3 # no change
+            self.ChangeTrial = 0
+            self.TargetChangeID = -1
+        else
+            self.ChangeTrial = 1
+            self.TargetChangeID = ChangeTargID
+
         self.Objects        = []
         self.ObjTarg        = np.zeros(self.nTotalItems,np.int)
         self.rotation       = 0
