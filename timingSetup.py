@@ -300,7 +300,7 @@ def oneTrial(i):
         test_arrayComponents.append(rect)
         slideRects.append(rect)
     if VWMTrials[i].ChangeTrial == 1:
-        slideRects[VWMTrials[i].ChangeTargID].ori += VWMTrials[i].rotation
+        slideRects[VWMTrials[i].TargetChangeID].ori += VWMTrials[i].rotation
     for thisComponent in test_arrayComponents:
         thisComponent.status = NOT_STARTED
 
@@ -377,7 +377,7 @@ def oneTrial(i):
        testResponse.keys=None
 
     # record # of targets and distractors in each hemifield and where change occured
-    changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].ChangeTargID].getHemifield()
+    changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].TargetChangeID].getHemifield()
     leftTargCount = VWMTrials[i].leftObjectCount(objType='target')
     leftDistCount = VWMTrials[i].leftObjectCount(objType='distractor')
     rightTargCount = VWMTrials[i].rightObjectCount(objType='target')
@@ -396,7 +396,7 @@ def oneTrial(i):
     thisExp.addData('ChangeTrial', VWMTrials[i].ChangeTrial)
     thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
-    thisExp.addData('condNum', VWMTrials[i].condNum)
+    thisExp.addData('HFCond', VWMTrials[i].HFCond)
     if VWMTrials[i].ChangeTrial == 1:
         thisExp.addData('changeHemi', changeTargHemi)
     thisExp.addData('leftTargs', leftTargCount)
