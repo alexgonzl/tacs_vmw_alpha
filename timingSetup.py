@@ -11,20 +11,20 @@ sys.dont_write_bytecode = True
 import vwmClasses
 
 #########  Monitor Settings  ##################
-MonitorWidth =  NSScreen.screens()[1].frame().size.width
-MonitorHeight = NSScreen.screens()[1].frame().size.height
-SubjDistance = 55 # distance from the screen in centimeters
-MonitorWidthCM  = 60  # in cm
+MonitorWidth =  NSScreen.screens()[0].frame().size.width
+MonitorHeight = NSScreen.screens()[0].frame().size.height
+SubjDistance = 40 # distance from the screen in centimeters
+MonitorWidthCM  = 27.3  # in cm
 # set up window
 mon = monitors.Monitor('')
 mon.setDistance(SubjDistance) # centimeters of between monitor and subject
 mon.setSizePix([MonitorWidth,MonitorHeight])
 mon.setWidth(MonitorWidthCM) # width in pixels of the monitor
-win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=False, screen=1, allowGUI=False, allowStencil=False,
+win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
-behavRun = 'stim1'
+behavRun = 'stim0'
 
 # make filenames based on date and terminal input
 date = data.getDateStr()
@@ -289,7 +289,7 @@ def oneTrial(i):
         test_arrayComponents.append(rect)
         slideRects.append(rect)
     if VWMTrials[i].ChangeTrial == 1:
-        slideRects[VWMTrials[i].ChangeTargID].ori += VWMTrials[i].rotation
+        slideRects[VWMTrials[i].TargetChangeID].ori += VWMTrials[i].rotation
     for thisComponent in test_arrayComponents:
         thisComponent.status = NOT_STARTED
 
@@ -331,7 +331,7 @@ def oneTrial(i):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=None)
+            theseKeys = event.getKeys(keyList=['space'])
 
             # check for quit:
             if "escape" in theseKeys:
@@ -366,7 +366,7 @@ def oneTrial(i):
        testResponse.keys=None
 
     # record # of targets and distractors in each hemifield and where change occured
-    changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].ChangeTargID].getHemifield()
+    changeTargHemi = VWMTrials[i].Objects[VWMTrials[i].TargetChangeID].getHemifield()
     leftTargCount = VWMTrials[i].leftObjectCount(objType='target')
     leftDistCount = VWMTrials[i].leftObjectCount(objType='distractor')
     rightTargCount = VWMTrials[i].rightObjectCount(objType='target')
