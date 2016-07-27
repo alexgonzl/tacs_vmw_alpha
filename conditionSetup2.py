@@ -18,11 +18,12 @@ subjHash = (int(sys.argv[1]), int(sys.argv[2]))
 np.random.seed(seed=subjHash)
 
 ### Path and Filename Information based on terminal input###
-date = data.getDateStr()
-homeDirectory = expanduser("~")
-saveDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data'
-filename = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'setupData/setup-run' + sys.argv[2] + "_" + date
-pickleFilename = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'setupData/subj' + sys.argv[1] + 'run' + sys.argv[2] + '.p'
+behavRun        = 'stim0'
+date            = data.getDateStr()
+homeDirectory   = expanduser("~")
+saveDirectory   = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data'
+filename        = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'setupData/setup-run' + sys.argv[2] + "_" + date
+pickleFilename  = saveDirectory + os.sep + behavRun + os.sep + 's' + sys.argv[1] + os.sep + 'setupData/subj' + sys.argv[1] + 'run' + sys.argv[2] + '.p'
 
 # ExperimentHandler conducts data saving
 thisExp = data.ExperimentHandler(name='setup', version='', runtimeInfo=None,
@@ -37,8 +38,7 @@ thisExp = data.ExperimentHandler(name='setup', version='', runtimeInfo=None,
 ############################################################
 
 ####### Constants ######
-nTrials         = 372
-behavRun        = 'stim1'
+nTrials         = 384
 oriConstraint   = True
 rotation        = 45
 
@@ -50,7 +50,6 @@ if oriConstraint:
         PossibleObjOrientations = range(4,42) + range(49,87) + range(94,132) + range(139,177)
     elif rotation == 90:
         PossibleObjOrientations = range(10,81)+ range(100,171)
-else:
 
 PossibleObjOrientations  = range(1,181)
 PossibleObjRadix         = np.array([4, 8])
@@ -58,15 +57,15 @@ PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                     np.arange(200,251),np.arange(290,341)))
 
 # nTrials
-nChangeTrials       = nTrials/2
-nLeftChangeTrials   = nChangeTrials/2;
-nRightChangeTrials  = nChangeTrials/2;
-nNoChangeTrials     = nTrials - nChangeTrials
+nChangeTrials       = int(nTrials/2)
+nLeftChangeTrials   = int(nChangeTrials/2)
+nRightChangeTrials  = int(nChangeTrials/2)
+nNoChangeTrials     = int(nTrials - nChangeTrials)
 
 # Whole Field Conditions
 WFCondNames           = {1:'t2d0',2:'t2d2',3:'t2d4',4:'t4d0',5:'t4d2',6:'t4d4'}
 nWFConds              = 6;
-nTrialsPerWFCond      = 48;
+nTrialsPerWFCond      = int(nTrials/nWFConds);
 nWFSubCondsPerWFCond  = {1:2,2:8,3:2,4:1,5:4,6:1}
 # sub conditions indicate possible target/distractor locations on the whole field
 
@@ -83,23 +82,22 @@ nTrialsPerChangeCond = {1:nLeftChangeTrials,2:nRightChangeTrials,3:nNoChangeTria
 HFCondNames     = {1:'t1d0',2:'t1d1',3:'t1d2',4:'t2d0',5:'t2d1',6:'t2d2'}
 nHFConds        = 6
 nTrialsPerHFCond   = 16
-
+nTrialsHFChangeCons = {1: nTrialsPerHFCond, 2: nTrialsPerHFCond, 3: nTrialsPerHFCond*2}
 # By design HF and WF conditions match; 
 # WF t2d0 is Left Change t1d0, Right Change t1d0, and No Change t1d0
 # so on for the rest of the HF_ChangeConds
 
-# Hemi field change conds
 
 # sub-condition target/distractors pairings; note that these are all indexed/key by condition
 CondsTargetQuadrants = {}
 CondsDistraQuadrants = {}
 
 # Quadrant pairings and groupings for a trial
-allquads        		= np.array([1,2,3,4],np.int)
+allquads                = np.array([1,2,3,4],np.int)
 targQuadPairings        = np.array([[1,3],[2,4]],np.int) # only diagonal pairings for targets
 distQuadPairings        = np.array([[1,3],[2,4],[1,2],[3,4]],np.int) # avoids same hemisphere for distractors pairings
 for cond in WFCondNames.keys():
-    nn = nWFSubCondsPerCond[cond]
+    nn = nWFSubCondsPerWFCond[cond]
     if cond==1: # 2 targets 0 distractors (2 sub-conditions)
         CondsTargetQuadrants[cond]  = targQuadPairings
         CondsDistraQuadrants[cond]  = np.zeros([nn,2],np.int)
@@ -129,36 +127,45 @@ for cond in WFCondNames.keys():
 
 # Set trial conditions and counterbalance
 TrialIDs            = np.arange(nTrials)  # trial IDs
-AvailableTrials     = np.array(TrialIDs,np.int)
 TrialWFCondIDs      = np.zeros(nTrials,np.int)  # WF trial condition
+TrialHFCondsID      = np.zeros(nTrials,np.int)  # HF trial condition
 TrialWFSubCondID    = np.zeros(nTrials,np.int)  # WF trial subcondition 
-TrialHFSubCondsID   = np.zeros(nTrials,np.int)  # HF trial condition
 TrialChangeCondID   = np.zeros(nTrials,np.int)  # Change Trial ID
 nTrialObjs          = np.zeros(nTrials,np.int)  # total number of objects per trial
 
 # balance subconditions
+AvailableTrials     = np.array(TrialIDs,np.int)
 for cond in WFCondNames.keys():
     # assign condition to trials
-    trials = np.random.choice(AvailableTrials,nTrialsPerWFCond[cond],replace=False)
+    trials = np.random.choice(AvailableTrials,nTrialsPerWFCond,replace=False)
     TrialWFCondIDs[trials] = cond
-    nTrialObjs[trials] = nTotalObjsPerCond[cond]
+    TrialHFCondsID[trials] = cond
+    nTrialObjs[trials] = nTotalObjsPerCond[cond-1]
 
     # assign subconditions to trials
     AvailableTrials2 = np.array(trials)
-    for subcond in range(nSubCondsPerCond[cond]):
+    for subcond in range(1,nWFSubCondsPerWFCond[cond]+1):
         trials2 = np.random.choice(AvailableTrials2,nTrialsPerWFSubCond[cond],replace=False)        
-        TrialWFSubCondID[trials2] = subcond+1
-        TrialHFSubCondsID[trials2]= subcond+1
+        TrialWFSubCondID[trials2] = subcond
 
         # assign change trials
         AvailableTrials3 = np.array(trials2)
         for cc in ChangeConds.keys():
             nn      = int(nTrialsPerWFSubCond[cond]*WeightPerChangeCond[cc])
-            trials3 = np.random.choice(AvailableTrials2,nn,replace=False)
+            trials3 = np.random.choice(AvailableTrials3,nn,replace=False)
             TrialChangeCondID[trials3] = cc
             AvailableTrials3 = np.setxor1d(AvailableTrials3,trials3)
         AvailableTrials2 = np.setxor1d(AvailableTrials2,trials2)
     AvailableTrials = np.setxor1d(AvailableTrials,trials)
+
+# checks for change trial balancing
+for cc in ChangeConds.keys():
+    assert (sum(TrialChangeCondID==cc)==nTrialsPerChangeCond[cc])
+    
+# checks for hemifield change balancing  
+for cond in WFCondNames.keys():
+    for cc in ChangeConds.keys():
+        assert (sum((TrialWFCondIDs==cond) & (TrialChangeCondID==cc))== nTrialsHFChangeCons[cc])
 
 # set center positions, check for overlap
 ObjectPositions = {}
@@ -167,13 +174,13 @@ DistractorPos   = {}
 # if change trial, indicate which target object is in the correct hemisphere
 TargetChangeID  = np.zeros(nTrials,np.int)-1
 for tt in range(nTrials):
-    cond        = int(TrialCondIDs[tt])
-    subCond     = int(TrialSubCondID[tt])-1
-    nT          = nTargetsInCond[cond]
-    nD          = nDistractorsInCond[cond]
+    cond        = int(TrialWFCondIDs[tt])
+    subCond     = int(TrialWFSubCondID[tt])
+    nT          = nTargetsInCond[cond-1]
+    nD          = nDistractorsInCond[cond-1]
 
-    TargsQuad   = CondsTargetQuadrants[cond][subCond]
-    DistracQuad = CondsDistraQuadrants[cond][subCond]
+    TargsQuad   = CondsTargetQuadrants[cond][subCond-1]
+    DistracQuad = CondsDistraQuadrants[cond][subCond-1]
 
     trialTargPos = []
     targRadPos   = np.empty(4)
@@ -186,11 +193,11 @@ for tt in range(nTrials):
         radix = PossibleObjRadix[radixID]
         x,y = coord.pol2cart(theta, radix, units='deg')
         trialTargPos.append((x,y))
-
-        if TargetChangeID[tt]==-1:
-            if TrialChangeCondID[tt]==1 & theta<=90:
+        
+        if (TargetChangeID[tt]==-1) & (TrialChangeCondID[tt]<3):
+            if (TrialChangeCondID[tt]==1) & (theta>=90):
                 TargetChangeID[tt]=ii
-            elif TrialChangeCondID[tt]==2 & theta>90:
+            elif (TrialChangeCondID[tt]==2) & (theta<90):
                 TargetChangeID[tt]=ii
 
     trialDisPos = []
@@ -210,6 +217,15 @@ for tt in range(nTrials):
     TargetPos[tt] = trialTargPos
     DistractorPos[tt] = trialDisPos
 
+# check that change target is on the correct hemisphere
+for tt in range(nTrials):
+    if TrialChangeCondID[tt]==1:
+        assert TargetPos[tt][TargetChangeID[tt]][0]<0, 'left change trial counterbalancing failed'
+    elif TrialChangeCondID[tt]==2:
+        assert TargetPos[tt][TargetChangeID[tt]][0]>0, 'right change trial counterbalancing failed'
+    else:
+        assert (TrialChangeCondID[tt]==3) & (TargetChangeID[tt]==-1), 'no change counterbalancing failed'
+
 # set orientations
 ## orientations sampled at random from PossibleOrientations array
 ObjectOrientations = {};
@@ -219,7 +235,7 @@ for tt in range(nTrials):
 #Create the trials.
 VWMTrials = []
 for tt in range(nTrials):
-    VWMTrials.append(VWMTrial(tt,TrialCondIDs[tt],TrialChangeCondID[tt],TargetChangeID[tt]))
+    VWMTrials.append(VWMTrial(tt,TrialWFCondIDs[tt],TrialChangeCondID[tt],TargetChangeID[tt]))
 
     # assign target rotation direction
     if TrialChangeCondID[tt]<3: # there is a change
@@ -241,11 +257,12 @@ for tt in range(nTrials):
             distCnt +=1
 
 # save setup info for reference
-for i in range(nTrials):
-    thisExp.addData('TrialID', TrialIDs[i])
-    thisExp.addData('ChangeTrial', ChangeTrialIDs[i])
-    thisExp.addData('TrialCond', TrialCondIDs[i])
-    thisExp.addData('SubCond', TrialSubCondID[i])
+for tt in range(nTrials):
+    thisExp.addData('TrialID', TrialIDs[tt])
+    thisExp.addData('TrialChangeCondID', TrialChangeCondID[tt])
+    thisExp.addData('TrialWFCond', TrialWFCondIDs[tt])
+    thisExp.addData('WFSubCond', TrialWFSubCondID[tt])
+    thisExp.addData('TrialHFCond', TrialHFCondsID[tt])
     thisExp.nextEntry()
 
 # store VWMTrials data structure in a pickle

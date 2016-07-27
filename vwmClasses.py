@@ -12,7 +12,7 @@ conds               = {}
 nTotalObjsPerCond   = {}
 nTargetsInCond      = {}
 nDistractorsInCond  = {}
-cnt = 1;
+cnt = 0;
 for ts in range(TargetSets.size):
     for ds in range(DistractorSets.size):
         conds[cnt]              = 'T' + str(TargetSets[ts]) + 'D' + str(DistractorSets[ds])
@@ -75,14 +75,14 @@ class VWMTrial():
         self.trialID        = trialID
         self.condNum        = condNum
         self.HFCond         = condNum 
-        self.nTargets       = nTargetsInCond[condNum]
-        self.nDistractors   = nDistractorsInCond[condNum]
+        self.nTargets       = nTargetsInCond[condNum-1]
+        self.nDistractors   = nDistractorsInCond[condNum-1]
         self.nTotalItems    = self.nDistractors + self.nTargets
         self.ChangeCond     = ChangeCond        
-        if ChangeCond==3 # no change
+        if ChangeCond==3: # no change
             self.ChangeTrial = 0
             self.TargetChangeID = -1
-        else
+        else:
             self.ChangeTrial = 1
             self.TargetChangeID = ChangeTargID
 
