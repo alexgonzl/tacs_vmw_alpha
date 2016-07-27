@@ -24,7 +24,7 @@ win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=True, screen=0, 
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
-behavRun = 'stim0'
+behavRun = 'stim1'
 
 # make filenames based on date and terminal input
 date = data.getDateStr()
@@ -385,8 +385,7 @@ def oneTrial(i):
     thisExp.addData('ChangeTrial', VWMTrials[i].ChangeTrial)
     thisExp.addData('nDistractors', VWMTrials[i].nDistractors)
     thisExp.addData('nTargets', VWMTrials[i].nTargets)
-    thisExp.addData('WFCond', VWMTrials[i].condNum)
-    thisExp.addData('HFCond', VWMTrials[i].HFCond)
+    thisExp.addData('Cond', VWMTrials[i].condNum)
     if VWMTrials[i].ChangeTrial == 1:
         thisExp.addData('changeHemi', changeTargHemi)
     thisExp.addData('leftTargs', leftTargCount)
