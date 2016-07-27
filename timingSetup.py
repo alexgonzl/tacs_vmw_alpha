@@ -23,6 +23,17 @@ mon.setWidth(MonitorWidthCM) # width in pixels of the monitor
 win = visual.Window(size=(MonitorWidth, MonitorHeight), fullscr=False, screen=1, allowGUI=False, allowStencil=False,
                     monitor=mon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
+# Experimenter (control) monitor settings, launches extra window to prevent app switching during task
+controlMonitorWidth =  NSScreen.screens()[0].frame().size.width
+controlMonitorHeight = NSScreen.screens()[0].frame().size.height
+# set up window
+controlMon = monitors.Monitor('')
+controlMon.setDistance(SubjDistance) # centimeters of between monitor and subject
+controlMon.setSizePix([controlMonitorWidth,controlMonitorHeight])
+controlMon.setWidth(MonitorWidthCM) # width in pixels of the monitor
+controlWin = visual.Window(size=(controlMonitorWidth, controlMonitorHeight), fullscr=True, screen=0, allowGUI=False, allowStencil=False,
+                    monitor=controlMon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
+
 # behav trial run for data saving
 behavRun = 'stim1'
 
@@ -331,7 +342,7 @@ def oneTrial(i):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=None)
+            theseKeys = event.getKeys(keyList=['num_enter'])
 
             # check for quit:
             if "escape" in theseKeys:
