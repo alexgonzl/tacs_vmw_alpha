@@ -43,6 +43,7 @@ oriConstraint   = True
 rotation        = 45
 
 # Set orientations and location for each item
+PossibleObjOrientations = []
 if oriConstraint:
     if rotation == 30:
         PossibleObjOrientations = range(3,28) + range(33,58) + range(63,88) + range(93,118) + range(123,148) + range(153,178)
@@ -50,8 +51,8 @@ if oriConstraint:
         PossibleObjOrientations = range(4,42) + range(49,87) + range(94,132) + range(139,177)
     elif rotation == 90:
         PossibleObjOrientations = range(10,81)+ range(100,171)
-
-PossibleObjOrientations  = range(1,181)
+else:
+    PossibleObjOrientations  = range(1,181)
 PossibleObjRadix         = np.array([4, 8])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                     np.arange(200,251),np.arange(290,341)))
@@ -83,7 +84,7 @@ HFCondNames     = {1:'t1d0',2:'t1d1',3:'t1d2',4:'t2d0',5:'t2d1',6:'t2d2'}
 nHFConds        = 6
 nTrialsPerHFCond   = 16
 nTrialsHFChangeCons = {1: nTrialsPerHFCond, 2: nTrialsPerHFCond, 3: nTrialsPerHFCond*2}
-# By design HF and WF conditions match; 
+# By design HF and WF conditions match;
 # WF t2d0 is Left Change t1d0, Right Change t1d0, and No Change t1d0
 # so on for the rest of the HF_ChangeConds
 
@@ -129,7 +130,7 @@ for cond in WFCondNames.keys():
 TrialIDs            = np.arange(nTrials)  # trial IDs
 TrialWFCondIDs      = np.zeros(nTrials,np.int)  # WF trial condition
 TrialHFCondsID      = np.zeros(nTrials,np.int)  # HF trial condition
-TrialWFSubCondID    = np.zeros(nTrials,np.int)  # WF trial subcondition 
+TrialWFSubCondID    = np.zeros(nTrials,np.int)  # WF trial subcondition
 TrialChangeCondID   = np.zeros(nTrials,np.int)  # Change Trial ID
 nTrialObjs          = np.zeros(nTrials,np.int)  # total number of objects per trial
 
@@ -145,7 +146,7 @@ for cond in WFCondNames.keys():
     # assign subconditions to trials
     AvailableTrials2 = np.array(trials)
     for subcond in range(1,nWFSubCondsPerWFCond[cond]+1):
-        trials2 = np.random.choice(AvailableTrials2,nTrialsPerWFSubCond[cond],replace=False)        
+        trials2 = np.random.choice(AvailableTrials2,nTrialsPerWFSubCond[cond],replace=False)
         TrialWFSubCondID[trials2] = subcond
 
         # assign change trials
@@ -161,8 +162,8 @@ for cond in WFCondNames.keys():
 # checks for change trial balancing
 for cc in ChangeConds.keys():
     assert (sum(TrialChangeCondID==cc)==nTrialsPerChangeCond[cc])
-    
-# checks for hemifield change balancing  
+
+# checks for hemifield change balancing
 for cond in WFCondNames.keys():
     for cc in ChangeConds.keys():
         assert (sum((TrialWFCondIDs==cond) & (TrialChangeCondID==cc))== nTrialsHFChangeCons[cc])
@@ -193,7 +194,7 @@ for tt in range(nTrials):
         radix = PossibleObjRadix[radixID]
         x,y = coord.pol2cart(theta, radix, units='deg')
         trialTargPos.append((x,y))
-        
+
         if (TargetChangeID[tt]==-1) & (TrialChangeCondID[tt]<3):
             if (TrialChangeCondID[tt]==1) & (theta>=90):
                 TargetChangeID[tt]=ii
@@ -243,7 +244,7 @@ for tt in range(nTrials):
             VWMTrials[tt].rotation = rotation
         else:
             VWMTrials[tt].rotation = rotation * -1
-    
+
     # Assign positions and orientations to VWMTrial object
     targCnt = 0
     distCnt = 0
