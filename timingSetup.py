@@ -399,6 +399,7 @@ def oneTrial(i):
     thisExp.addData('Cond', VWMTrials[i].condNum)
     if VWMTrials[i].ChangeTrial == 1:
         thisExp.addData('changeHemi', changeTargHemi)
+    thisExp.addData('ChangeCond', VWMTrials[i].ChangeCond)
     thisExp.addData('leftTargs', leftTargCount)
     thisExp.addData('rightTargs', rightTargCount)
     thisExp.addData('leftDists', leftDistCount)
