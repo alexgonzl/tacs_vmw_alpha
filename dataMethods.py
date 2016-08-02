@@ -28,8 +28,14 @@ def pashlerK(csv, hem):
         changeNum = 2
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
-    changes = df['ChangeCond'] == changeNum
-    noChanges = df['ChangeCond'] != changeNum
+    changes = 0
+    noChanges = 0
+    if changeNum == 0:
+        changes = df['ChangeTrial'] == 1
+        noChanges = df['ChangeTrial'] == 0
+    else:
+        changes = df['ChangeCond'] == changeNum
+        noChanges = df['ChangeCond'] != changeNum
     t1d0 = df['WFCond'] == 1
     t1d1 = df['WFCond'] == 2
     t1d2 = df['WFCond'] == 3
@@ -53,9 +59,9 @@ def pashlerK(csv, hem):
         fAlarmRates[key] = falarms/(falarms+crejects)
         s = 0
         if key == 't1d0' or key == 't1d1' or key == 't1d2':
-            s = 2
+            s = 1
         else:
-            s = 4
+            s = 2
         Kvals[key] = kCalculation(s, hitRates[key], fAlarmRates[key])
     return {'Kvals': Kvals, 'hitRates': hitRates, 'fAlarmRates': fAlarmRates}
 
@@ -67,7 +73,11 @@ def rtCalc(csv, hem):
 
     # create conditions
     resps = df['Response'] == 1
-    changes = df['changeHemi'] == hem
+    changes = 0
+    if hem != 'left' or hem != 'right':
+        changes = df['ChangeTrial'] == 1
+    else:
+        changes = df['changeHemi'] == hem
     t1d0 = df['WFCond'] == 1
     t1d1 = df['WFCond'] == 2
     t1d2 = df['WFCond'] == 3
@@ -101,8 +111,14 @@ def dprime(csv, hem):
         changeNum = 2
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
-    changes = df['ChangeCond'] == changeNum
-    noChanges = df['ChangeCond'] != changeNum
+    changes = 0
+    noChanges = 0
+    if changeNum == 0:
+        changes = df['ChangeTrial'] == 1
+        noChanges = df['ChangeTrial'] == 0
+    else:
+        changes = df['ChangeCond'] == changeNum
+        noChanges = df['ChangeCond'] != changeNum
     t1d0 = df['WFCond'] == 1
     t1d1 = df['WFCond'] == 2
     t1d2 = df['WFCond'] == 3
