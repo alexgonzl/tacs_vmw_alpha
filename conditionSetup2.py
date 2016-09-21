@@ -18,7 +18,7 @@ subjHash = (int(sys.argv[1]), int(sys.argv[2]))
 np.random.seed(seed=subjHash)
 
 ### Path and Filename Information based on terminal input###
-behavRun        = 'stim1'
+behavRun        = 'behav5'
 date            = data.getDateStr()
 homeDirectory   = expanduser("~")
 saveDirectory   = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data'
