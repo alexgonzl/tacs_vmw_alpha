@@ -10,10 +10,6 @@ import re
 # contanst number of trials per change cond
 nTrialsPerChangeCond = 16
 
-# establish file data directory
-homeDirectory = expanduser("~")
-dataDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data/stim1/'
-
 # counts number of trials corresponding to inputted conditions
 def condCounter(df, response, changeType, cond):
     count = float(len(df[response & changeType & cond]))
@@ -57,8 +53,13 @@ def rt(df, resps, change, cond):
     rt = row['RT'].median()
     return rt
 
-def extractPerformance(subj, run):
+def extractPerformance(subj, run, testRound):
     # read in csv file
+
+    # establish file data directory
+    homeDirectory = expanduser("~")
+    dataDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data/' + testRound + '/'
+
     saveDirectory = dataDirectory + 's' + str(subj) + os.sep + 'runData/'
     directoryFiles = os.listdir(saveDirectory)
     csv = ''
@@ -77,12 +78,12 @@ def extractPerformance(subj, run):
     lNoChanges = df['ChangeCond'] != 1
     rChanges = df['ChangeCond'] == 2
     rNoChanges = df['ChangeCond'] != 2
-    t1d0 = df['WFCond'] == 1
-    t1d1 = df['WFCond'] == 2
-    t1d2 = df['WFCond'] == 3
-    t2d0 = df['WFCond'] == 4
-    t2d1 = df['WFCond'] == 5
-    t2d2 = df['WFCond'] == 6
+    t1d0 = df['Cond'] == 1
+    t1d1 = df['Cond'] == 2
+    t1d2 = df['Cond'] == 3
+    t2d0 = df['Cond'] == 4
+    t2d1 = df['Cond'] == 5
+    t2d2 = df['Cond'] == 6
 
     # initialize dictionaries
     lHits = OrderedDict()
