@@ -71,14 +71,14 @@ class VWMObj():
 ###  Visual Working Memory Trial Class
 class VWMTrial():
     """trial properties for VWM alpha tACS """
-    def __init__(self, trialID, condNum, ChangeCond ,ChangeTargID):
+    def __init__(self, trialID, condNum, ChangeCond, ChangeTargID):
         self.trialID        = trialID
         self.condNum        = condNum
-        self.HFCond         = condNum 
+        self.HFCond         = condNum
         self.nTargets       = nTargetsInCond[condNum-1]
         self.nDistractors   = nDistractorsInCond[condNum-1]
         self.nTotalItems    = self.nDistractors + self.nTargets
-        self.ChangeCond     = ChangeCond        
+        self.ChangeCond     = ChangeCond
         if ChangeCond==3: # no change
             self.ChangeTrial = 0
             self.TargetChangeID = -1
