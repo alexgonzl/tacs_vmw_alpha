@@ -80,12 +80,12 @@ def extractPerformance(subj, run, testRound):
     lNoChanges = df['ChangeCond'] != 1
     rChanges = df['ChangeCond'] == 2
     rNoChanges = df['ChangeCond'] != 2
-    t1d0 = df['WFCond'] == 1
-    t1d1 = df['WFCond'] == 2
-    t1d2 = df['WFCond'] == 3
-    t2d0 = df['WFCond'] == 4
-    t2d1 = df['WFCond'] == 5
-    t2d2 = df['WFCond'] == 6
+    t1d0 = df['Cond'] == 1
+    t1d1 = df['Cond'] == 2
+    t1d2 = df['Cond'] == 3
+    t2d0 = df['Cond'] == 4
+    t2d1 = df['Cond'] == 5
+    t2d2 = df['Cond'] == 6
 
     # initialize dictionaries
     lHits = OrderedDict()
