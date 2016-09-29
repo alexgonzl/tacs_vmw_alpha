@@ -18,7 +18,7 @@ subjHash = (int(sys.argv[1]), int(sys.argv[2]))
 np.random.seed(seed=subjHash)
 
 ### Path and Filename Information based on terminal input###
-behavRun        = 'stim1'
+behavRun        = 'behav5'
 date            = data.getDateStr()
 homeDirectory   = expanduser("~")
 saveDirectory   = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data'
@@ -186,7 +186,10 @@ for tt in range(nTrials):
     trialTargPos = []
     targRadPos   = np.empty(4)
     targRadPos[:] =np.nan
+
+    switch = np.random.random()>0.5
     for ii in range(nT):
+        if (cond>3 and switch): ii = (nT-1) - ii
         qq = TargsQuad[ii] # target quadrant
         theta = np.random.choice(PossibleObjTheta[qq-1], replace=False)
         radixID = int(np.random.random()>0.5)
@@ -196,9 +199,9 @@ for tt in range(nTrials):
         trialTargPos.append((x,y))
 
         if (TargetChangeID[tt]==-1) & (TrialChangeCondID[tt]<3):
-            if (TrialChangeCondID[tt]==1) & (theta>=90):
+            if (TrialChangeCondID[tt]==1) & (theta>90 and theta<270):
                 TargetChangeID[tt]=ii
-            elif (TrialChangeCondID[tt]==2) & (theta<90):
+            elif (TrialChangeCondID[tt]==2) & (theta<90 or theta>270):
                 TargetChangeID[tt]=ii
 
     trialDisPos = []

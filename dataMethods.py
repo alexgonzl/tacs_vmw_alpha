@@ -10,10 +10,6 @@ import re
 # contanst number of trials per change cond
 nTrialsPerChangeCond = 16
 
-# establish file data directory
-homeDirectory = expanduser("~")
-dataDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data/stim1/'
-
 # counts number of trials corresponding to inputted conditions
 def condCounter(df, response, changeType, cond):
     count = float(len(df[response & changeType & cond]))
@@ -57,8 +53,15 @@ def rt(df, resps, change, cond):
     rt = row['RT'].median()
     return rt
 
-def extractPerformance(subj, run):
+def extractPerformance(subj, run, testRound):
+    #TODO check number of trials, forget assertion but send out warning if not 384 trials
+
     # read in csv file
+
+    # establish file data directory
+    homeDirectory = expanduser("~")
+    dataDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data/' + testRound + '/'
+
     saveDirectory = dataDirectory + 's' + str(subj) + os.sep + 'runData/'
     directoryFiles = os.listdir(saveDirectory)
     csv = ''
@@ -69,6 +72,7 @@ def extractPerformance(subj, run):
     df = pd.read_csv(csv)
 
     # create conditions
+    #TODO consolidate conds
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
     changes = df['ChangeTrial'] == 1
@@ -77,12 +81,12 @@ def extractPerformance(subj, run):
     lNoChanges = df['ChangeCond'] != 1
     rChanges = df['ChangeCond'] == 2
     rNoChanges = df['ChangeCond'] != 2
-    t1d0 = df['WFCond'] == 1
-    t1d1 = df['WFCond'] == 2
-    t1d2 = df['WFCond'] == 3
-    t2d0 = df['WFCond'] == 4
-    t2d1 = df['WFCond'] == 5
-    t2d2 = df['WFCond'] == 6
+    t1d0 = df['Cond'] == 1
+    t1d1 = df['Cond'] == 2
+    t1d2 = df['Cond'] == 3
+    t2d0 = df['Cond'] == 4
+    t2d1 = df['Cond'] == 5
+    t2d2 = df['Cond'] == 6
 
     # initialize dictionaries
     lHits = OrderedDict()
@@ -125,17 +129,19 @@ def extractPerformance(subj, run):
     for key in HFconds:
         lHits[key] = condCounter(df, resps, lChanges, HFconds[key])
         lMisses[key] = condCounter(df, noResps, lChanges, HFconds[key])
-        #assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key])
-        lFAs[key] = condCounter(df, resps, lNoChanges, HFconds[key])
-        lCRs[key] = condCounter(df, noResps, lNoChanges, HFconds[key])
+        #assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key]) + ': ' + str(subj) + ',' + str(run) + 'Cond: ' + key
+        lFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
+        lCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
         #assert (lFAs[key] + lCRs[key] == nTrialsPerChangeCond * 3), 'lNoChange counterbalancing failed: ' + str(lFAs[key] + lCRs[key])
 
         rHits[key] = condCounter(df, resps, rChanges, HFconds[key])
         rMisses[key] = condCounter(df, noResps, rChanges, HFconds[key])
         #assert (rHits[key] + rMisses[key] == nTrialsPerChangeCond), 'rChange counterbalancing failed: ' + str(rHits[key] + rMisses[key])
-        rFAs[key] = condCounter(df, resps, rNoChanges, HFconds[key])
-        rCRs[key] = condCounter(df, noResps, rNoChanges, HFconds[key])
+        rFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
+        rCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
         #assert (rFAs[key] + rCRs[key] == nTrialsPerChangeCond * 3), 'rNoChange counterbalancing failed: ' + str(rFAs[key] + rCRs[key])
+
+        #TODO add FAs and CRs for dprime calc (using lChanges and rChanges)
 
         # HFconds used b/c ChangeCond #s are equivalent to WFconds
         wHits[key] = condCounter(df, resps, changes, HFconds[key])
