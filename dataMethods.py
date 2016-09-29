@@ -72,6 +72,7 @@ def extractPerformance(subj, run, testRound):
     df = pd.read_csv(csv)
 
     # create conditions
+    #TODO consolidate conds
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
     changes = df['ChangeTrial'] == 1
@@ -129,16 +130,18 @@ def extractPerformance(subj, run, testRound):
         lHits[key] = condCounter(df, resps, lChanges, HFconds[key])
         lMisses[key] = condCounter(df, noResps, lChanges, HFconds[key])
         #assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key]) + ': ' + str(subj) + ',' + str(run) + 'Cond: ' + key
-        lFAs[key] = condCounter(df, resps, lNoChanges, HFconds[key])
-        lCRs[key] = condCounter(df, noResps, lNoChanges, HFconds[key])
+        lFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
+        lCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
         #assert (lFAs[key] + lCRs[key] == nTrialsPerChangeCond * 3), 'lNoChange counterbalancing failed: ' + str(lFAs[key] + lCRs[key])
 
         rHits[key] = condCounter(df, resps, rChanges, HFconds[key])
         rMisses[key] = condCounter(df, noResps, rChanges, HFconds[key])
         #assert (rHits[key] + rMisses[key] == nTrialsPerChangeCond), 'rChange counterbalancing failed: ' + str(rHits[key] + rMisses[key])
-        rFAs[key] = condCounter(df, resps, rNoChanges, HFconds[key])
-        rCRs[key] = condCounter(df, noResps, rNoChanges, HFconds[key])
+        rFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
+        rCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
         #assert (rFAs[key] + rCRs[key] == nTrialsPerChangeCond * 3), 'rNoChange counterbalancing failed: ' + str(rFAs[key] + rCRs[key])
+
+        #TODO add FAs and CRs for dprime calc (using lChanges and rChanges)
 
         # HFconds used b/c ChangeCond #s are equivalent to WFconds
         wHits[key] = condCounter(df, resps, changes, HFconds[key])
