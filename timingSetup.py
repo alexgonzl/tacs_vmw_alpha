@@ -35,7 +35,7 @@ controlWin = visual.Window(size=(controlMonitorWidth, controlMonitorHeight), ful
                     monitor=controlMon, units = 'deg', color=[0,0,0], colorSpace='rgb', blendMode='avg')
 
 # behav trial run for data saving
-behavRun = 'stim1'
+behavRun = 'behav6'
 
 # make filenames based on date and terminal input
 date = data.getDateStr()
