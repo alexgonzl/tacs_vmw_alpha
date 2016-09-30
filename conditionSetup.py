@@ -223,6 +223,10 @@ for tt in range(nTrials):
 
 # check that change target is on the correct hemisphere
 for tt in range(nTrials):
+    if TrialChangeCondID[tt] > 3 and TrialWFCondIDs[tt] < 4:
+        assert (TargetChangeID[tt] < 2) & (TargetChangeID[tt] > -1), 'change target assignment failed for conds 1-3'
+    if TrialChangeCondID[tt] > 3 and TrialWFCondIDs[tt] >= 4:
+        assert (TargetChangeID[tt] < 4) & (TargetChangeID[tt] > -1), 'change target assignment failed for conds 4-6'
     if TrialChangeCondID[tt]==1:
         assert TargetPos[tt][TargetChangeID[tt]][0]<0, 'left change trial counterbalancing failed'
     elif TrialChangeCondID[tt]==2:
