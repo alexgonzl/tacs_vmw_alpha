@@ -53,7 +53,7 @@ if oriConstraint:
         PossibleObjOrientations = range(10,81)+ range(100,171)
 else:
     PossibleObjOrientations  = range(1,181)
-PossibleObjRadix         = np.array([4, 8])
+PossibleObjRadix         = np.array([4.5, 8.5])
 PossibleObjTheta         = np.vstack((np.arange(20,71),np.arange(110,161), \
                                     np.arange(200,251),np.arange(290,341)))
 
