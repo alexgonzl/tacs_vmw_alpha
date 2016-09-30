@@ -331,7 +331,7 @@ def oneTrial(i):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=['space'])
+            theseKeys = event.getKeys(keyList=['1','2'])
 
             # check for quit:
             if "escape" in theseKeys:
@@ -374,8 +374,10 @@ def oneTrial(i):
 
     # mark response
     resp = 0
-    if testResponse.keys != None:
+    if testResponse.keys == '1':
         resp = 1
+    elif testResponse.keys == '2':
+        resp = 2
 
     #-------Store data for thisExp (ExperimentHandler)-------
     thisExp.addData('trialID', VWMTrials[i].trialID)
