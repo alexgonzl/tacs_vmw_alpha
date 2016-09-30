@@ -332,6 +332,7 @@ def oneTrial(i):
             cross4.setAutoDraw(False)
 
         # *testResponse* updates
+        #TODO add second response for rejections
         if t >= 0.0 and testResponse.status == NOT_STARTED:
             # keep track of start time for later
             testResponse.tStart = t  # underestimates by a little under one frame
@@ -342,7 +343,7 @@ def oneTrial(i):
         if testResponse.status == STARTED and t >= (testArrayTime + itiTime -win.monitorFramePeriod*0.75): #most of one frame period left
             testResponse.status = STOPPED
         if testResponse.status == STARTED:
-            theseKeys = event.getKeys(keyList=['num_enter'])
+            theseKeys = event.getKeys(keyList=['num_1','num_2'])
 
             # check for quit:
             if "escape" in theseKeys:
@@ -385,8 +386,10 @@ def oneTrial(i):
 
     # mark response
     resp = 0
-    if testResponse.keys != None:
+    if testResponse.keys == 'num_1':
         resp = 1
+    elif testResponse.keys == 'num_2':
+        resp = 2
 
     #-------Store data for thisExp (ExperimentHandler)-------
     thisExp.addData('trialID', VWMTrials[i].trialID)
