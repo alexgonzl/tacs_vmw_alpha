@@ -332,7 +332,6 @@ def oneTrial(i):
             cross4.setAutoDraw(False)
 
         # *testResponse* updates
-        #TODO add second response for rejections
         if t >= 0.0 and testResponse.status == NOT_STARTED:
             # keep track of start time for later
             testResponse.tStart = t  # underestimates by a little under one frame
