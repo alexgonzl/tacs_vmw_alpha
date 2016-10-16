@@ -25,7 +25,7 @@ def pashlerK(hits, misses, falarms, crejects, cond):
 
 # calculates d's using Z from scipy.stats.norm.ppf()
 def dprime(hits, misses, falarms, crejects):
-    # TODO fix correction
+    # TODO fix /0 correction
 
     # Floors an ceilings are replaced by half hits and half FA's
     halfHit = 0.5/(hits+misses)
@@ -54,14 +54,12 @@ def rt(df, resps, change, cond):
     return rt
 
 def extractPerformance(subj, run, testRound):
-    #TODO check number of trials, forget assertion but send out warning if not 384 trials
-
-    # read in csv file
-
+    ### read in csv file ###
     # establish file data directory
     homeDirectory = expanduser("~")
     dataDirectory = homeDirectory + os.sep + 'Google Drive/tACS_VWM_ALPHA/data/' + testRound + '/'
 
+    # find file in directory with regex
     saveDirectory = dataDirectory + 's' + str(subj) + os.sep + 'runData/'
     directoryFiles = os.listdir(saveDirectory)
     csv = ''
@@ -71,8 +69,10 @@ def extractPerformance(subj, run, testRound):
             csv = saveDirectory + match.group()
     df = pd.read_csv(csv)
 
+    # only conduct assertions if 384 trials
+    assertions = len(df.index) == 384
+
     # create conditions
-    #TODO consolidate conds
     resps = df['Response'] == 1
     noResps = df['Response'] == 0
     changes = df['ChangeTrial'] == 1
@@ -129,27 +129,29 @@ def extractPerformance(subj, run, testRound):
     for key in HFconds:
         lHits[key] = condCounter(df, resps, lChanges, HFconds[key])
         lMisses[key] = condCounter(df, noResps, lChanges, HFconds[key])
-        #assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key]) + ': ' + str(subj) + ',' + str(run) + 'Cond: ' + key
         lFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
         lCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
-        #assert (lFAs[key] + lCRs[key] == nTrialsPerChangeCond * 3), 'lNoChange counterbalancing failed: ' + str(lFAs[key] + lCRs[key])
 
         rHits[key] = condCounter(df, resps, rChanges, HFconds[key])
         rMisses[key] = condCounter(df, noResps, rChanges, HFconds[key])
-        #assert (rHits[key] + rMisses[key] == nTrialsPerChangeCond), 'rChange counterbalancing failed: ' + str(rHits[key] + rMisses[key])
         rFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
         rCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
-        #assert (rFAs[key] + rCRs[key] == nTrialsPerChangeCond * 3), 'rNoChange counterbalancing failed: ' + str(rFAs[key] + rCRs[key])
 
         #TODO add FAs and CRs for dprime calc (using lChanges and rChanges)
 
         # HFconds used b/c ChangeCond #s are equivalent to WFconds
         wHits[key] = condCounter(df, resps, changes, HFconds[key])
         wMisses[key] = condCounter(df, noResps, changes, HFconds[key])
-        #assert (wHits[key] + wMisses[key] == nTrialsPerChangeCond * 2), 'wChange counterbalancing failed: ' + str(wHits[key] + wMisses[key])
         wFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
         wCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
-        #assert (wFAs[key] + wCRs[key] == nTrialsPerChangeCond * 2), 'wNoChange counterbalancing failed: ' + str(wFAs[key] + wCRs[key])
+
+        # if (assertions):
+        #     assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key]) + ': ' + str(subj) + ',' + str(run) + 'Cond: ' + key
+        #     assert (lFAs[key] + lCRs[key] == nTrialsPerChangeCond * 3), 'lNoChange counterbalancing failed: ' + str(lFAs[key] + lCRs[key])
+        #     assert (rHits[key] + rMisses[key] == nTrialsPerChangeCond), 'rChange counterbalancing failed: ' + str(rHits[key] + rMisses[key])
+        #     assert (rFAs[key] + rCRs[key] == nTrialsPerChangeCond * 3), 'rNoChange counterbalancing failed: ' + str(rFAs[key] + rCRs[key])
+        #     assert (wHits[key] + wMisses[key] == nTrialsPerChangeCond * 2), 'wChange counterbalancing failed: ' + str(wHits[key] + wMisses[key])
+        #     assert (wFAs[key] + wCRs[key] == nTrialsPerChangeCond * 2), 'wNoChange counterbalancing failed: ' + str(wFAs[key] + wCRs[key])
 
         lHitRTs[key] = rt(df, resps, lChanges, HFconds[key])
         rHitRTs[key] = rt(df, resps, rChanges, HFconds[key])
