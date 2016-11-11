@@ -25,21 +25,21 @@ def pashlerK(hits, misses, falarms, crejects, cond):
 
 # calculates d's using Z from scipy.stats.norm.ppf()
 def dprime(hits, misses, falarms, crejects):
-    # TODO fix /0 correction
-
-    # Floors an ceilings are replaced by half hits and half FA's
-    halfHit = 0.5/(hits+misses)
-    halfFa = 0.5/(falarms+crejects)
-
-    # Calculate hitrate and avoid d' infinity
-    hitRate = hits/(hits+misses)
-    if hitRate == 1: hitRate = 1-halfHit
-    if hitRate == 0: hitRate = halfHit
-
-    # Calculate false alarm rate and avoid d' infinity
-    faRate = falarms/(falarms+crejects)
-    if faRate == 1: faRate = 1-halfFa
-    if faRate == 0: faRate = halfFa
+    faRate = 0
+    hitRate = 0
+    #correct for FA values of 0
+    if falarms == 0:
+        faRate = 1 / (2 * crejects)
+    elif crejects ==0:
+        faRate = 1 - (1 / (2*falarms))
+    else:
+        faRate = falarms / (falarms + crejects)
+    if misses == 0:
+        hitRate = 1 - (1 / (2 * hits))
+    elif hits ==0:
+        hitRate = 1 / (2 * misses)
+    else:
+        hitRate = hits/(hits+misses);
 
     # calculate dprime using Z (ppf function in scipy.norm)
     dprime = Z(hitRate) - Z(faRate)
@@ -74,7 +74,7 @@ def extractPerformance(subj, run, testRound):
 
     # create conditions
     resps = df['Response'] == 1
-    noResps = df['Response'] == 0
+    rejects = df['Response'] == 2
     changes = df['ChangeTrial'] == 1
     noChanges = df['ChangeTrial'] == 0
     lChanges = df['ChangeCond'] == 1
@@ -128,22 +128,22 @@ def extractPerformance(subj, run, testRound):
     # store rate values
     for key in HFconds:
         lHits[key] = condCounter(df, resps, lChanges, HFconds[key])
-        lMisses[key] = condCounter(df, noResps, lChanges, HFconds[key])
+        lMisses[key] = condCounter(df, rejects, lChanges, HFconds[key])
         lFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
-        lCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
+        lCRs[key] = condCounter(df, rejects, noChanges, HFconds[key])
 
         rHits[key] = condCounter(df, resps, rChanges, HFconds[key])
-        rMisses[key] = condCounter(df, noResps, rChanges, HFconds[key])
+        rMisses[key] = condCounter(df, rejects, rChanges, HFconds[key])
         rFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
-        rCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
+        rCRs[key] = condCounter(df, rejects, noChanges, HFconds[key])
 
         #TODO add FAs and CRs for dprime calc (using lChanges and rChanges)
 
         # HFconds used b/c ChangeCond #s are equivalent to WFconds
         wHits[key] = condCounter(df, resps, changes, HFconds[key])
-        wMisses[key] = condCounter(df, noResps, changes, HFconds[key])
+        wMisses[key] = condCounter(df, rejects, changes, HFconds[key])
         wFAs[key] = condCounter(df, resps, noChanges, HFconds[key])
-        wCRs[key] = condCounter(df, noResps, noChanges, HFconds[key])
+        wCRs[key] = condCounter(df, rejects, noChanges, HFconds[key])
 
         # if (assertions):
         #     assert (lHits[key] + lMisses[key] == nTrialsPerChangeCond), 'lChange counterbalancing failed: ' + str(lHits[key] + lMisses[key]) + ': ' + str(subj) + ',' + str(run) + 'Cond: ' + key
